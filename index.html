@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>25坪 3房2衛 裝潢工期與預算計算機 (智能儲存分級版)</title>
+    <style>
+        body {
+            font-family: "PingFang TC", "Helvetica Neue", Helvetica, Arial, "Microsoft JhengHei", sans-serif;
+            background-color: #f0f3f4;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            padding-bottom: 120px;
+        }
+        h1 {
+            text-align: center;
+            color: #1a252f;
+            font-size: 1.6rem;
+            margin-bottom: 5px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+        }
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 25px 30px;
+            border-radius: 14px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+        }
+        /* 頂部功能操作列 */
+        .action-bar {
+            background-color: #f8f9f9;
+            border: 1px solid #d5dbdb;
+            border-radius: 10px;
+            padding: 15px 20px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 9px 18px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-save {
+            background-color: #27ae60;
+            color: white;
+        }
+        .btn-save:hover {
+            background-color: #219a52;
+            box-shadow: 0 3px 8px rgba(39,174,96,0.3);
+        }
+        .btn-reset {
+            background-color: #95a5a6;
+            color: white;
+        }
+        .btn-reset:hover {
+            background-color: #7f8c8d;
+        }
+        .save-status {
+            font-size: 0.85rem;
+            color: #7f8c8d;
+            font-weight: 500;
+        }
+        /* 分類與卡片 */
+        .section-card {
+            margin-top: 35px;
+            border-bottom: 2px solid #ebedef;
+            padding-bottom: 15px;
+        }
+        .category {
+            color: #2980b9;
+            font-size: 1.35rem;
+            margin-bottom: 10px;
+            border-left: 5px solid #3498db;
+            padding-left: 10px;
+        }
+        /* 優先度分級標題 */
+        .priority-header {
+            font-size: 1rem;
+            font-weight: bold;
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-top: 18px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+        .essential-header {
+            background-color: #fdedec;
+            color: #c0392b;
+            border-left: 4px solid #e74c3c;
+        }
+        .optional-header {
+            background-color: #fef9e7;
+            color: #d35400;
+            border-left: 4px solid #f39c12;
+        }
+        .priority-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            margin-right: 8px;
+            color: white;
+        }
+        .essential-badge {
+            background-color: #e74c3c;
+        }
+        .optional-badge {
+            background-color: #f39c12;
+        }
+        /* 列表細項 */
+        .item {
+            display: flex;
+            align-items: flex-start;
+            padding: 14px 10px;
+            border-bottom: 1px solid #f2f4f4;
+            transition: background-color 0.2s;
+        }
+        .item:hover {
+            background-color: #f8fbff;
+            border-radius: 6px;
+        }
+        .input-wrapper {
+            margin-top: 3px;
+            margin-right: 15px;
+        }
+        input[type="checkbox"], input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: #3498db;
+        }
+        .item-content {
+            flex-grow: 1;
+        }
+        .item-title {
+            font-weight: 600;
+            font-size: 1.08rem;
+            color: #2c3e50;
+            cursor: pointer;
+            line-height: 1.5;
+        }
+        .time-tag {
+            display: inline-block;
+            background-color: #e8f8f5;
+            color: #117a65;
+            font-size: 0.8rem;
+            padding: 1px 7px;
+            border-radius: 4px;
+            margin-left: 6px;
+            font-weight: 500;
+            border: 1px solid #a3e4d7;
+            vertical-align: 1px;
+        }
+        .item-desc {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-top: 5px;
+            line-height: 1.45;
+        }
+        .item-price {
+            font-weight: bold;
+            color: #e74c3c;
+            min-width: 155px;
+            text-align: right;
+            margin-left: 15px;
+            font-size: 1.05rem;
+        }
+        .note {
+            font-size: 0.85rem;
+            color: #d35400;
+            background-color: #fdf2e9;
+            padding: 8px 12px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            display: inline-block;
+            border-left: 3px solid #e67e22;
+        }
+        /* 底部固定計算區 */
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #1a252f;
+            color: white;
+            padding: 15px 20px;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            box-shadow: 0 -4px 15px rgba(0,0,0,0.3);
+            z-index: 1000;
+        }
+        .total-box {
+            text-align: center;
+        }
+        .total-label {
+            font-size: 0.95rem;
+            color: #bdc3c7;
+            margin-bottom: 4px;
+        }
+        .total-value {
+            font-size: 1.65rem;
+            font-weight: bold;
+            color: #f1c40f;
+            letter-spacing: 1px;
+        }
+    </style>
+    <style>
+        :root { --ink:#17211b; --muted:#66736b; --line:#dfe7e1; --surface:#fff; --canvas:#f4f7f4; --brand:#176b4d; --brand-soft:#e8f4ee; }
+        * { box-sizing:border-box; }
+        html { scroll-behavior:smooth; }
+        body { background:var(--canvas); color:var(--ink); padding:0 20px 150px; line-height:1.6; }
+        .page-header { max-width:1120px; margin:auto; padding:44px 0 24px; }
+        .eyebrow { margin:0 0 6px; color:var(--brand); font-weight:800; letter-spacing:.12em; font-size:.78rem; }
+        h1 { text-align:left; font-size:clamp(1.8rem,4vw,2.7rem); margin:0; letter-spacing:-.03em; }
+        .subtitle { text-align:left; margin:8px 0 0; max-width:760px; color:var(--muted); font-size:1rem; }
+        .summary-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:24px; }
+        .summary-card { background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:18px 20px; box-shadow:0 8px 24px rgba(31,54,41,.05); }
+        .summary-card span { display:block; color:var(--muted); font-size:.85rem; font-weight:700; }
+        .summary-card strong { display:block; margin-top:3px; font-size:1.35rem; letter-spacing:-.02em; }
+        .summary-card.primary { background:var(--brand); color:#fff; border-color:var(--brand); }
+        .summary-card.primary span { color:#d5eee2; }
+        .container { max-width:1120px; padding:0; background:transparent; box-shadow:none; }
+        .toolbar { position:sticky; top:0; z-index:20; display:grid; grid-template-columns:minmax(240px,1fr) auto; gap:12px; align-items:center; padding:14px; margin-bottom:18px; background:rgba(244,247,244,.94); backdrop-filter:blur(12px); border-bottom:1px solid var(--line); }
+        .search-wrap { position:relative; }
+        .search-wrap span { position:absolute; left:14px; top:50%; transform:translateY(-50%); color:var(--muted); }
+        #search-input { width:100%; min-height:46px; padding:10px 14px 10px 42px; border:1px solid #cbd7cf; border-radius:12px; background:#fff; font-size:1rem; outline:none; }
+        #search-input:focus { border-color:var(--brand); box-shadow:0 0 0 3px rgba(23,107,77,.12); }
+        .filter-group { display:flex; gap:6px; flex-wrap:wrap; }
+        .filter-btn { min-height:42px; padding:8px 13px; border:1px solid #cbd7cf; border-radius:999px; background:#fff; color:#455249; font-weight:750; cursor:pointer; }
+        .filter-btn.active { background:var(--brand); color:#fff; border-color:var(--brand); }
+        .action-bar { background:#fff; border-color:var(--line); padding:14px 16px; border-radius:14px; }
+        .btn { min-height:42px; border-radius:10px; }
+        .btn-save { background:var(--brand); }
+        .btn-save:hover { background:#11583e; }
+        .section-card { margin:0 0 14px; padding:0; border:1px solid var(--line); border-radius:16px; background:#fff; overflow:hidden; box-shadow:0 5px 18px rgba(31,54,41,.04); }
+        .category { position:relative; margin:0; padding:19px 54px 19px 20px; color:var(--ink); border-left:5px solid var(--brand); font-size:1.15rem; cursor:pointer; user-select:none; }
+        .category::after { content:"⌃"; position:absolute; right:20px; color:var(--muted); }
+        .section-card.collapsed .category::after { content:"⌄"; }
+        .section-card.collapsed > :not(.category) { display:none; }
+        .note { margin:0 18px 10px; display:block; }
+        .priority-header { margin:12px 18px 4px; border-radius:9px; }
+        .essential-header { background:#fff1ef; color:#8f332d; }
+        .optional-header { background:#fff7e3; color:#7c5200; }
+        .item { margin:0 8px; padding:16px 12px; align-items:center; border-radius:10px; }
+        .item:hover { background:#f5faf7; }
+        .item.selected { background:var(--brand-soft); }
+        .item.dimmed { display:none; }
+        .input-wrapper { margin:0 14px 0 0; }
+        input[type="checkbox"],input[type="radio"] { width:22px; height:22px; accent-color:var(--brand); }
+        .item-title { color:var(--ink); }
+        .item-desc { color:var(--muted); }
+        .item-price { color:#9c3e37; min-width:170px; font-variant-numeric:tabular-nums; }
+        .time-tag { background:#eef5f1; color:#38634f; border-color:#cfe0d6; }
+        .empty-state { display:none; padding:56px 20px; text-align:center; color:var(--muted); }
+        .footer { padding:12px max(20px,calc((100vw - 1120px)/2)); justify-content:space-between; background:#17211b; }
+        .footer .total-box { text-align:left; }
+        .footer-actions { display:flex; align-items:center; gap:12px; }
+        .selected-count { color:#d5ded8; font-size:.9rem; }
+        @media (max-width:760px) {
+            body { padding:0 12px 168px; }
+            .page-header { padding:28px 4px 18px; }
+            .summary-grid { grid-template-columns:1fr 1fr; gap:9px; }
+            .summary-card { padding:14px; }
+            .summary-card.primary { grid-column:1/-1; }
+            .toolbar { grid-template-columns:1fr; margin-inline:-12px; padding:10px 12px; }
+            .filter-group { overflow-x:auto; flex-wrap:nowrap; padding-bottom:2px; }
+            .filter-btn { flex:0 0 auto; }
+            .action-bar { align-items:flex-start; }
+            .save-status { width:100%; }
+            .item { align-items:flex-start; flex-wrap:wrap; padding:15px 10px; }
+            .input-wrapper { padding-top:2px; }
+            .item-content { width:calc(100% - 42px); }
+            .item-price { width:100%; min-width:0; margin:10px 0 0 42px; text-align:left; font-size:.98rem; }
+            .footer { display:grid; grid-template-columns:1fr 1fr; gap:8px; padding:10px 14px; }
+            .footer .total-value { font-size:1.2rem; }
+            .footer-actions { grid-column:1/-1; justify-content:center; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="page-header">
+        <p class="eyebrow">25 坪・3 房 2 衛</p>
+        <h1>裝潢預算規劃器</h1>
+        <p class="subtitle">勾選想做的工程與設備，即時掌握預算範圍。必備與選配已分級整理，選擇會自動保存在這台裝置。</p>
+        <div class="summary-grid" aria-label="預算摘要">
+            <div class="summary-card primary"><span>目前預算區間</span><strong id="range-summary">NT$ 0 ～ 0</strong></div>
+            <div class="summary-card"><span>已選項目</span><strong id="selected-summary">0 項</strong></div>
+            <div class="summary-card"><span>總項目</span><strong id="all-summary">0 項</strong></div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="toolbar" aria-label="清單工具">
+            <label class="search-wrap"><span aria-hidden="true">⌕</span><input id="search-input" type="search" placeholder="搜尋工程、設備或品牌…" autocomplete="off"></label>
+            <div class="filter-group" aria-label="篩選項目">
+                <button class="filter-btn active" data-filter="all">全部</button>
+                <button class="filter-btn" data-filter="selected">已選</button>
+                <button class="filter-btn" data-filter="essential">必備</button>
+                <button class="filter-btn" data-filter="optional">選配</button>
+            </div>
+        </div>
+        
+        <div class="action-bar">
+            <div class="action-buttons">
+                <button class="btn btn-save" onclick="exportShareableHTML()">💾 另存成可分享 HTML 檔</button>
+                <button class="btn btn-reset" onclick="resetSelections()">🔄 重置預設選擇</button>
+            </div>
+            <div class="save-status" id="save-status">💡 您的勾選變更皆會自動儲存於瀏覽器中</div>
+        </div>
+
+        <div id="checklist"></div>
+        <div class="empty-state" id="empty-state">找不到符合條件的項目，請換個關鍵字或篩選方式。</div>
+    </div>
+
+    <div class="footer">
+        <div class="total-box">
+            <div class="total-label">預算加總 (最低概算)</div>
+            <div class="total-value" id="min-total">NT$ 0</div>
+        </div>
+        <div class="total-box">
+            <div class="total-label">預算加總 (最高概算)</div>
+            <div class="total-value" id="max-total">NT$ 0</div>
+        </div>
+        <div class="footer-actions"><span class="selected-count" id="footer-count">已選 0 項</span></div>
+    </div>
+
+    <script>
+        // 專案配置識別碼（用於確保匯出檔案不會與舊有暫存衝突）
+        let CONFIG_ID = "renovation_25ping_default";
+
+        /* --- DATA_START --- */
+        const data = [
+            {
+                category: "一、 基礎拆除、泥作與油漆工程",
+                type: "checkbox",
+                items: [
+                    { title: '廚房全面打除與重作工程 (約3-4坪) <span class="time-tag">⏱️ 約 10~14 天</span>', desc: "舊廚房打除見底，重新拉設水電管線、貼新壁磚與地磚，包含全新整套廚具設備（含人造石/石英石檯面與防蟑系統櫃）。", min: 180000, max: 350000, checked: true, priority: "essential" },
+                    { title: '雙衛浴局部維護工程 <span class="time-tag">⏱️ 約 1~3 天</span>', desc: "不打除舊磚。針對老化矽利康重新施打、局部填縫修補，以及舊五金拆除與漏水檢測。", min: 20000, max: 45000, checked: true, priority: "essential" },
+                    { title: '客廳凸牆敲除與水泥回填 <span class="time-tag">⏱️ 約 1~2 天</span>', desc: "敲除半天、抹平半天，需留1天讓水泥乾透養護。", min: 5000, max: 15000, checked: true, priority: "essential" },
+                    { title: '全室批土油漆 (得利/虹牌) <span class="time-tag">⏱️ 約 5~7 天</span>', desc: "全屋全室AB膠補縫、2-3次全面批土細磨與上漆，工期最扎實的一環。", min: 60000, max: 110000, checked: true, priority: "essential" }
+                ]
+            },
+            {
+                category: "一之二、 全屋水電工程（獨立類別）",
+                type: "checkbox",
+                note: "⚠️ 水電工程為最優先施工項目，須在泥作封牆前完成配管，並優先確認冷氣、全熱交換器管路位置：",
+                items: [
+                    { title: '全屋水電與總配電盤更新 <span class="time-tag">⏱️ 約 5~7 天</span>', desc: "全室打牆配管引線，包含配合全新廚房的高功率專用迴路（洗碗機、烤箱、冷氣）。", min: 180000, max: 280000, checked: true, priority: "essential" },
+                    { title: '全戶追加升級大量插座 (含USB/Type-C面板) <span class="time-tag">⏱️ 約 1~2 天</span>', desc: "評估現代多裝置需求，於沙發左右、中島、床頭與書桌大幅增加插座點位，並升級國際牌星鑽或中一電工等高階面板。", min: 15000, max: 30000, checked: true, priority: "optional" },
+                    { title: '掃地機「自動上下水」專用管線預留 <span class="time-tag">⏱️ 約半天</span>', desc: "水電師傅配合玄關櫃或電視櫃，預留進排水管與獨立插座。", min: 8000, max: 15000, checked: true, priority: "optional" }
+                ]
+            },
+            {
+                category: "一之三、 天花板木工工程",
+                type: "checkbox",
+                note: "⚠️ 天花板為全熱交換器、吊隱除濕機、冷氣管路的施工載體，必須在封板前確認所有設備選型與位置：",
+                items: [
+                    { title: '全室天花板木工工程（平釘+造型） <span class="time-tag">⏱️ 約 5~8 天</span>', desc: "包含客廳間接照明層次、冷氣出回風口包覆、全熱交換器及除濕機吊掛空間、燈具出線預留開孔。", min: 80000, max: 160000, checked: true, priority: "essential" }
+                ]
+            },
+            {
+                category: "一之四、 地坪工程",
+                type: "checkbox",
+                items: [
+                    { title: '全屋木地板 (Ua Floors) <span class="time-tag">⏱️ 約 1~2 天</span>', desc: "於裝潢極尾聲（細清前）進場鋪設，約20坪實坪一天半可完工。", min: 100000, max: 180000, checked: true, priority: "essential" }
+                ]
+            },
+            {
+                category: "一之五、 工程行政費用",
+                type: "checkbox",
+                items: [
+                    { title: '大樓裝修保證金 <span class="time-tag">⏱️ 工期 0 天</span>', desc: "依各社區管委會規定，通常需於開工前繳交，完工驗收後退還。", min: 20000, max: 60000, checked: true, priority: "essential" },
+                    { title: '裝潢廢棄物清運費（複數車次） <span class="time-tag">⏱️ 約半天/車</span>', desc: "廚房全室打除＋凸牆拆除，廢棄物量大，預估 2～3 車次。", min: 30000, max: 84000, checked: true, priority: "essential" },
+                    { title: '室內裝修許可申請費 <span class="time-tag">⏱️ 約 2~4 週審查</span>', desc: "變更天花板或隔間依法須申請，建議委託設計師代辦。", min: 8000, max: 25000, checked: true, priority: "essential" },
+                    { title: '工程期間大樓公共區域清潔費 <span class="time-tag">⏱️ 整個工期</span>', desc: "依社區規定，工班進出走廊、電梯每日或每月計費。", min: 3000, max: 15000, checked: true, priority: "essential" },
+                    { title: '裝潢收尾細清（專業工程清潔） <span class="time-tag">⏱️ 約 1~2 天</span>', desc: "木工粉塵、玻璃膠殘留、地板保護膜撕除等專業清潔。", min: 8000, max: 15000, checked: true, priority: "essential" }
+                ]
+            },
+            {
+                category: "一之六、 全室冷氣工程 (單選)",
+                type: "radio",
+                name: "aircon_system",
+                note: "⚠️ 須在天花板封板前確認機型與管路位置：",
+                items: [
+                    { title: '大金 DAIKIN 分離式多聯機（3對5） <span class="time-tag">⏱️ 約 2~3 天</span>', desc: "1台室外機帶5台室內機，省空間、節電效率高。連工帶料含冷媒配管。", min: 150000, max: 220000, checked: true, priority: "essential" },
+                    { title: '三菱重工 MHIAA 分離式（各房獨立） <span class="time-tag">⏱️ 約 2~3 天</span>', desc: "各房間獨立迴路，可彈性開關單一空間。含安裝、冷媒管配管。", min: 130000, max: 200000, checked: false, priority: "essential" },
+                    { title: 'Panasonic 分離式（各房獨立）<span class="time-tag">⏱️ 約 2~3 天</span>', desc: "日系變頻，耐用口碑佳，台灣售後維修方便。", min: 120000, max: 185000, checked: false, priority: "essential" },
+                    { title: '沿用舊機或不裝冷氣 <span class="time-tag">⏱️ 工期 0 天</span>', desc: "保留原有舊冷氣或自行另外處理，僅需請水電/木工注意舊管線包覆。", min: 0, max: 0, checked: false, priority: "essential" }
+                ]
+            },
+            {
+                category: "一之七、 全室燈具規劃與安裝",
+                type: "checkbox",
+                items: [
+                    { title: '全室燈具採購與安裝 (客廳+餐廳+各房) <span class="time-tag">⏱️ 約 1 天</span>', desc: "由水電師傅裝潢尾聲統一安裝。費用含燈具本體，依品牌與造型差異大。", min: 25000, max: 55000, checked: true, priority: "essential" },
+                    { title: '廚房工作燈與層板燈（廚具廠商含安裝）<span class="time-tag">⏱️ 約 2 小時</span>', desc: "通常由廚具廠商配套安裝，確認報價含燈具。", min: 5000, max: 12000, checked: true, priority: "optional" }
+                ]
+            },
+            {
+                category: "二、 全熱交換機 (單選)",
+                type: "radio",
+                name: "erv_system",
+                items: [
+                    { title: 'Panasonic 頂級全熱交換器 (FY-E150) <span class="time-tag">⏱️ 約 1~2 天</span>', desc: "需於木工封板前進場吊掛與拉風管。", min: 75000, max: 95000, checked: true, priority: "optional" },
+                    { title: '大金 DAIKIN 全熱交換器 (VAM150) <span class="time-tag">⏱️ 約 1~2 天</span>', desc: "保濕與熱交換技術優異，需與木工配合進場。", min: 85000, max: 110000, checked: false, priority: "optional" },
+                    { title: '不裝全熱交換器 <span class="time-tag">⏱️ 工期 0 天</span>', desc: "維持天花板高度，改為自行開窗通風。", min: 0, max: 0, checked: false, priority: "optional" }
+                ]
+            },
+            {
+                category: "二之二、 全戶中央除濕機 (單選)",
+                type: "radio",
+                name: "dehumidifier_system",
+                items: [
+                    { title: 'Panasonic 吊隱除濕機 (F-YV50LX) <span class="time-tag">⏱️ 約 1 天</span>', desc: "與冷氣、全熱同步進場吊掛，拉獨立排水管。", min: 75000, max: 90000, checked: true, priority: "optional" },
+                    { title: 'Honeywell 中央除濕機 (美系大風量) <span class="time-tag">⏱️ 約 1 天</span>', desc: "大風量強效除濕，與風管配管同步施作。", min: 80000, max: 105000, checked: false, priority: "optional" },
+                    { title: '不裝全戶除濕機 <span class="time-tag">⏱️ 工期 0 天</span>', desc: "省下天花板空間，日後自行購買移動式落地機型。", min: 0, max: 0, checked: false, priority: "optional" }
+                ]
+            },
+            {
+                category: "二之三、 衛浴維護升級單品 (複選)",
+                type: "checkbox",
+                items: [
+                    { title: '主客衛浴暖風機 2台 (Panasonic) <span class="time-tag">⏱️ 約半天</span>', desc: "筆記指定重點！天花板開孔與接線定位。", min: 22000, max: 26000, checked: true, priority: "essential" },
+                    { title: '外牆逆止閥風門 (ALASKA 阿拉斯加) <span class="time-tag">⏱️ 約 1~2 小時</span>', desc: "筆記指定重點！阻絕大樓管道間異味倒灌。", min: 3000, max: 6000, checked: true, priority: "essential" },
+                    { title: '電熱毛巾架 2組 (CORREDi 定時款) <span class="time-tag">⏱️ 約 2~3 小時</span>', desc: "鑽孔固定與接線，背膠需靜置24小時。", min: 16000, max: 28000, checked: true, priority: "optional" },
+                    { title: '全戶濾水 + 軟水機 (BWT 德國倍世) <span class="time-tag">⏱️ 約半天</span>', desc: "工作陽台水電配管與主機架設測試。", min: 45000, max: 75000, checked: true, priority: "optional" }
+                ]
+            },
+            {
+                category: "三、 弱電高速網路與木作系統櫃 (複選)",
+                type: "checkbox",
+                items: [
+                    { title: '電視牆影音隱藏管槽 <span class="time-tag">⏱️ 約半天</span>', desc: "筆記指定重點！水電打牆階段埋入2吋管，隱藏線路。", min: 6000, max: 15000, checked: true, priority: "essential" },
+                    { title: '弱電升級 + 全屋 Cat6A 高速網路 <span class="time-tag">⏱️ 約 1~2 天</span>', desc: "穿管拉線、壓接資訊插座與全室訊號測試。", min: 25000, max: 45000, checked: true, priority: "essential" },
+                    { title: '原屋系統櫃維修與五金升級 <span class="time-tag">⏱️ 約半天~1天</span>', desc: "全屋舊門片更換 Blum 緩衝鉸鏈。", min: 20000, max: 45000, checked: true, priority: "essential" },
+                    { title: '主臥床頭與化妝台淺櫃 <span class="time-tag">⏱️ 約 1 天</span>', desc: "筆記指定重點：不要深櫃、預留吹風機插座。", min: 20000, max: 40000, checked: true, priority: "essential" },
+                    { title: '全屋智慧開關面板 (Aqara 綠米) <span class="time-tag">⏱️ 約 1 天</span>', desc: "油漆完工後，水電最後退場前進場安裝。", min: 50000, max: 100000, checked: true, priority: "optional" },
+                    { title: '玄關智慧污衣與裝備櫃 <span class="time-tag">⏱️ 約 1~2 天</span>', desc: "系統櫃板材集中進場組裝。", min: 40000, max: 75000, checked: true, priority: "optional" },
+                    { title: '書房訂製滑軌漫畫櫃與工作區 <span class="time-tag">⏱️ 約 2~3 天</span>', desc: "重載滑軌軌道校正與櫃體水平調整。", min: 40000, max: 80000, checked: true, priority: "optional" },
+                    { title: '飛利浦 Alpha 智慧電子鎖 <span class="time-tag">⏱️ 約 2~3 小時</span>', desc: "拆除原大門舊鎖與鎖體校正調試。", min: 17000, max: 19000, checked: true, priority: "optional" },
+                    { title: 'Aqara G4 視訊門鈴 <span class="time-tag">⏱️ 約 1~2 小時</span>', desc: "與電子鎖同期安裝，可與智慧開關聯動。", min: 6000, max: 9000, checked: true, priority: "optional" }
+                ]
+            },
+            {
+                category: "四、 新廚房配備：廚下洗碗機 (單選)",
+                type: "radio",
+                name: "dishwasher",
+                note: "新增更多洗碗機品牌供您評估：",
+                items: [
+                    { title: 'Bosch 6系列 60cm 全嵌 (SMS6HAW10X) <span class="time-tag">⏱️ 約半天</span>', desc: "含沸石烘乾技術，與新廚具完美整合設計。", min: 52000, max: 58000, checked: true, priority: "essential" },
+                    { title: 'Miele 德國美諾 G7000系列 60cm 半/全嵌 <span class="time-tag">⏱️ 約半天</span>', desc: "洗碗機界勞斯萊斯，專利 AutoDos 智能洗劑投放，極致護鍋護杯。", min: 70000, max: 95000, checked: false, priority: "essential" },
+                    { title: 'ASKO 瑞典賽寧 86系列 60cm 全嵌 <span class="time-tag">⏱️ 約半天</span>', desc: "超大容量與獨家 Turbo Drying 抽風烘乾系統，適合有大量塑膠兒童餐具的家庭。", min: 65000, max: 75000, checked: false, priority: "essential" },
+                    { title: 'Panasonic 45cm 獨立/半嵌 (NP-45MD9W) <span class="time-tag">⏱️ 約半天</span>', desc: "日系深型規格，省空間首選，完美融入新廚具。", min: 45000, max: 49000, checked: false, priority: "essential" },
+                    { title: '櫻花 SAKURA 60cm 全嵌式 (E7783) <span class="time-tag">⏱️ 約半天</span>', desc: "高CP值國產首選，符合台灣人下廚習慣，維修保固最便利。", min: 28000, max: 35000, checked: false, priority: "essential" }
+                ]
+            },
+            {
+                category: "四之二、 新廚房配備：油煙機、烤箱",
+                type: "checkbox",
+                items: [
+                    { title: '林內倒T式排油煙機（RH-B100VG） <span class="time-tag">⏱️ 約 1 小時</span>', desc: "台灣下廚習慣油煙量大，建議選排煙效率高的款式。", min: 15000, max: 22000, checked: true, priority: "essential" },
+                    { title: '林內崁入式瓦斯爐（RB-3TG） <span class="time-tag">⏱️ 約半天</span>', desc: "廚具廠商協助安裝崁入。", min: 12000, max: 18000, checked: true, priority: "essential" },
+                    { title: 'Bosch 崁入式蒸烤箱（HRG5140S2） <span class="time-tag">⏱️ 約半天</span>', desc: "水電須提前拉專用迴路（220V/20A）。", min: 35000, max: 55000, checked: false, priority: "optional" }
+                ]
+            },
+            {
+                category: "五、 數位恆溫熱水器 (單選)",
+                type: "radio",
+                name: "water_heater",
+                items: [
+                    { title: '林內 16L 微電腦強排 (RU-1633WX) <span class="time-tag">⏱️ 約 2~3 小時</span>', desc: "水量伺服器，溫控精準。", min: 16500, max: 18500, checked: true, priority: "essential" },
+                    { title: '櫻花 16L 四季溫強排 (SH-1635) <span class="time-tag">⏱️ 約 2~3 小時</span>', desc: "全自動偵測四季水溫，智能調整火力。", min: 15000, max: 17000, checked: false, priority: "essential" }
+                ]
+            },
+            {
+                category: "六、 家事自動化與主力家電 (複選)",
+                type: "checkbox",
+                items: [
+                    { title: '全屋捲簾窗簾汰換工程 <span class="time-tag">⏱️ 約半天</span>', desc: "細清完畢後進場掛設。", min: 40000, max: 70000, checked: true, priority: "essential" },
+                    { title: 'VOCA TX1 廚下瞬熱飲水機 <span class="time-tag">⏱️ 約 2 小時</span>', desc: "筆記指定重點！於全新廚房檯面開孔定位，管路隱藏。", min: 36000, max: 40000, checked: true, priority: "essential" },
+                    { title: 'LG 滾筒洗衣機（DD直驅馬達系列）<span class="time-tag">⏱️ 約 1~2 小時</span>', desc: "陽台給排水位置確認、水平校正。(備註：家中若已有洗衣機可取消勾選)", min: 28000, max: 42000, checked: true, priority: "optional" },
+                    { title: 'LG 免曬衣 16kg 乾衣機 <span class="time-tag">⏱️ 約 1~2 小時</span>', desc: "可與洗衣機疊放更省空間。", min: 38000, max: 42000, checked: true, priority: "optional" },
+                    { title: '櫻花 SAKURA 電動升降曬衣架 <span class="time-tag">⏱️ 約 2~3 小時</span>', desc: "陽台天花板鑽孔打膨脹螺絲與接線。", min: 12000, max: 18000, checked: true, priority: "optional" }
+                ]
+            },
+            {
+                category: "七、 品牌家具：客廳沙發 (單選)",
+                type: "radio",
+                name: "sofa",
+                note: "新增更多台灣熱門品牌沙發供您挑選：",
+                items: [
+                    { title: '沙發先生：龐德系列 (貓抓布) <span class="time-tag">⏱️ 約 1 小時</span>', desc: "椅背可向後滑推延伸坐深，超級適合盤腿打遊戲。", min: 45000, max: 48000, checked: true, priority: "essential" },
+                    { title: 'MR. LIVING 居家先生：布萊恩/威廉系列 <span class="time-tag">⏱️ 約 1 小時</span>', desc: "北歐高質感設計，防潑水布料適合有小孩的家庭。", min: 30000, max: 45000, checked: false, priority: "essential" },
+                    { title: '坐又銘沙發：桑尼/丹尼爾系列 <span class="time-tag">⏱️ 約 1 小時</span>', desc: "台灣手工沙發，主打超級滑軌與健康無毒材質，長效保固。", min: 45000, max: 65000, checked: false, priority: "essential" },
+                    { title: 'AJ2 愛家概念：馬爾默系列 <span class="time-tag">⏱️ 約 1 小時</span>', desc: "高階抗污面料，坐感扎實不塌陷。", min: 54000, max: 59000, checked: false, priority: "essential" },
+                    { title: 'IKEA：KIVIK 三人座沙發 <span class="time-tag">⏱️ 約 1~2 小時</span>', desc: "高性價比，布套可全拆洗。", min: 18000, max: 22000, checked: false, priority: "essential" }
+                ]
+            },
+            {
+                category: "八、 品牌家具：主臥床架 (單選)",
+                type: "radio",
+                name: "bed_master",
+                note: "新增實木與模組化床架選項：",
+                items: [
+                    { title: '有情門：喆林床架 <span class="time-tag">⏱️ 約 1 小時</span>', desc: "台灣製實木，床頭板人體工學設計。", min: 28000, max: 33000, checked: true, priority: "essential" },
+                    { title: '走走家具：模組化雙人床架 <span class="time-tag">⏱️ 約 1 小時</span>', desc: "台灣設計製造，極簡金屬與木材質結合，高腳設計完美配合掃地機。", min: 18000, max: 25000, checked: false, priority: "essential" },
+                    { title: '詩肯柚木 SCANTEAK：標準雙人實木床架 <span class="time-tag">⏱️ 約 1 小時</span>', desc: "天然柚木溫潤質感，堅固耐用不搖晃，經典保值。", min: 25000, max: 40000, checked: false, priority: "essential" },
+                    { title: '眠豆腐：懸空實木裸床架 <span class="time-tag">⏱️ 約 1 小時</span>', desc: "網紅極簡款，結構穩固無異音。", min: 15000, max: 18000, checked: false, priority: "essential" }
+                ]
+            },
+            {
+                category: "九、 品牌家具：專屬兒童房 (複選)",
+                type: "checkbox",
+                note: "新增多種兒童專門傢俱與護脊品牌：",
+                items: [
+                    { title: '單人床架：iloom 怡倫 (TINKLE-POP) <span class="time-tag">⏱️ 約 1.5 小時</span>', desc: "韓國原裝組件，無毒防撞膠條與粉嫩配色。", min: 24000, max: 28000, checked: true, priority: "essential" },
+                    { title: '成長書桌：大將作 (氣壓升降桌+椅) <span class="time-tag">⏱️ 約 1 小時</span>', desc: "防眩光無毒板材，人體工學護脊。", min: 32000, max: 38000, checked: true, priority: "essential" },
+                    { title: '單人床架：FLEXA 丹麥兒童單人床架 <span class="time-tag">⏱️ 約 2 小時</span>', desc: "北歐頂級兒童家具，可隨成長調整為高架床，全實木無毒環保漆。", min: 35000, max: 55000, checked: false, priority: "optional" },
+                    { title: '單人床架：宜得利 NITORI 附抽屜收納床架 <span class="time-tag">⏱️ 約 1.5 小時</span>', desc: "日系實用高CP值，床底自帶大容量抽屜，方便收納玩具與衣物。", min: 6000, max: 12000, checked: false, priority: "optional" },
+                    { title: '成長書桌：亞梭傢俬 Artso 兒童護脊桌椅組 <span class="time-tag">⏱️ 約 1 小時</span>', desc: "台灣護脊桌椅領導品牌，專利微傾斜桌面與安全防夾設計。", min: 28000, max: 42000, checked: false, priority: "optional" },
+                    { title: '護眼檯燈：BenQ MindDuo <span class="time-tag">⏱️ 約 15 分鐘</span>', desc: "自動入座開燈，廣角無頻閃。", min: 5900, max: 6500, checked: true, priority: "optional" }
+                ]
+            }
+        ];
+        /* --- DATA_END --- */
+
+        const checklistContainer = document.getElementById('checklist');
+        const minTotalEl = document.getElementById('min-total');
+        const maxTotalEl = document.getElementById('max-total');
+
+        function formatPrice(num) {
+            return num.toLocaleString('zh-TW');
+        }
+
+        // 1. 儲存至 LocalStorage
+        function saveToLocalStorage() {
+            const state = {};
+            const inputs = document.querySelectorAll('.item-input');
+            inputs.forEach(input => {
+                state[input.id] = input.checked;
+            });
+            try {
+                localStorage.setItem(`renovation_calc_${CONFIG_ID}`, JSON.stringify(state));
+                const statusEl = document.getElementById('save-status');
+                if (statusEl) {
+                    statusEl.innerText = '✓ 系統已自動紀錄您的最新勾選狀態';
+                    statusEl.style.color = '#27ae60';
+                    setTimeout(() => {
+                        statusEl.innerText = '💡 您的勾選變更皆會自動儲存於瀏覽器中';
+                        statusEl.style.color = '#7f8c8d';
+                    }, 2500);
+                }
+            } catch(e) {
+                console.warn('無法儲存至 LocalStorage', e);
+            }
+        }
+
+        // 2. 從 LocalStorage 讀取並同步至內存
+        function loadFromLocalStorage() {
+            try {
+                const saved = localStorage.getItem(`renovation_calc_${CONFIG_ID}`);
+                if (saved) {
+                    const state = JSON.parse(saved);
+                    const inputs = document.querySelectorAll('.item-input');
+                    inputs.forEach(input => {
+                        if (state.hasOwnProperty(input.id)) {
+                            input.checked = state[input.id];
+                        }
+                    });
+                    updateDataFromUI();
+                }
+            } catch(e) {
+                console.warn('讀取 LocalStorage 發生錯誤', e);
+            }
+        }
+
+        // 3. 將畫面的勾選同步回 data 物件
+        function updateDataFromUI() {
+            const inputs = document.querySelectorAll('.item-input');
+            inputs.forEach(input => {
+                const parts = input.id.split('-');
+                if (parts.length === 3) {
+                    const secIdx = parseInt(parts[1]);
+                    const itemIdx = parseInt(parts[2]);
+                    if (data[secIdx] && data[secIdx].items[itemIdx]) {
+                        data[secIdx].items[itemIdx].checked = input.checked;
+                    }
+                }
+            });
+        }
+
+        function calculateTotal() {
+            let minTotal = 0;
+            let maxTotal = 0;
+            const inputs = document.querySelectorAll('.item-input');
+            
+            inputs.forEach((input) => {
+                if (input.checked) {
+                    minTotal += parseInt(input.dataset.min);
+                    maxTotal += parseInt(input.dataset.max);
+                }
+            });
+
+            minTotalEl.innerText = 'NT$ ' + formatPrice(minTotal);
+            maxTotalEl.innerText = 'NT$ ' + formatPrice(maxTotal);
+            const selectedCount = [...inputs].filter(input => input.checked).length;
+            document.getElementById('range-summary').innerText = `NT$ ${formatPrice(minTotal)} ～ ${formatPrice(maxTotal)}`;
+            document.getElementById('selected-summary').innerText = `${selectedCount} 項`;
+            document.getElementById('all-summary').innerText = `${inputs.length} 項`;
+            document.getElementById('footer-count').innerText = `已選 ${selectedCount} 項`;
+            document.querySelectorAll('.item').forEach(item => item.classList.toggle('selected', item.querySelector('.item-input')?.checked));
+        }
+
+        // 4. 渲染清單（具備優先度智能分流）
+        function renderChecklist() {
+            checklistContainer.innerHTML = '';
+            data.forEach((section, secIndex) => {
+                const sectionDiv = document.createElement('div');
+                sectionDiv.className = 'section-card';
+                sectionDiv.innerHTML = `<h2 class="category">${section.category}</h2>`;
+                
+                if(section.note) {
+                    sectionDiv.innerHTML += `<span class="note">${section.note}</span>`;
+                }
+
+                const essentialItems = [];
+                const optionalItems = [];
+
+                section.items.forEach((item, itemIndex) => {
+                    const itemWithIdx = { ...item, originalIndex: itemIndex };
+                    if (item.priority === 'essential') {
+                        essentialItems.push(itemWithIdx);
+                    } else {
+                        optionalItems.push(itemWithIdx);
+                    }
+                });
+
+                // 內部渲染群組函式
+                const renderGroup = (items, headerTitle, badgeClass, badgeText) => {
+                    if (items.length === 0) return;
+                    
+                    const headerDiv = document.createElement('div');
+                    headerDiv.className = `priority-header ${badgeClass === 'essential-badge' ? 'essential-header' : 'optional-header'}`;
+                    headerDiv.innerHTML = `<span class="priority-badge ${badgeClass}">${badgeText}</span> ${headerTitle}`;
+                    sectionDiv.appendChild(headerDiv);
+
+                    items.forEach(item => {
+                        const id = `item-${secIndex}-${item.originalIndex}`;
+                        const itemDiv = document.createElement('div');
+                        itemDiv.className = 'item';
+                        itemDiv.dataset.priority = item.priority;
+                        itemDiv.dataset.search = `${item.title.replace(/<[^>]+>/g, '')} ${item.desc}`.toLowerCase();
+                        
+                        const isChecked = item.checked ? 'checked' : '';
+                        const inputType = section.type;
+                        const inputName = section.name ? `name="${section.name}"` : '';
+                        
+                        itemDiv.innerHTML = `
+                            <div class="input-wrapper">
+                                <input type="${inputType}" id="${id}" ${inputName} class="item-input" data-min="${item.min}" data-max="${item.max}" ${isChecked}>
+                            </div>
+                            <div class="item-content">
+                                <label for="${id}" class="item-title">${item.title}</label>
+                                <div class="item-desc">${item.desc}</div>
+                            </div>
+                            <div class="item-price">
+                                $${formatPrice(item.min)} - $${formatPrice(item.max)}
+                            </div>
+                        `;
+                        sectionDiv.appendChild(itemDiv);
+                    });
+                };
+
+                renderGroup(essentialItems, "絕對必要裝修項目 (基礎安全、必備機能與手寫筆記核心)", "essential-badge", "必備");
+                renderGroup(optionalItems, "其他選配項目 (舒適升級、健康環境與彈性擴充)", "optional-badge", "選配");
+
+                checklistContainer.appendChild(sectionDiv);
+            });
+
+            const inputs = document.querySelectorAll('.item-input');
+            inputs.forEach(input => {
+                input.addEventListener('change', () => {
+                    updateDataFromUI();
+                    calculateTotal();
+                    saveToLocalStorage();
+                });
+            });
+
+            loadFromLocalStorage();
+            calculateTotal();
+            initEnhancedControls();
+        }
+
+        let activeFilter = 'all';
+        function applyFilters() {
+            const query = document.getElementById('search-input').value.trim().toLowerCase();
+            let visibleItems = 0;
+            document.querySelectorAll('.section-card').forEach(section => {
+                let sectionVisible = 0;
+                section.querySelectorAll('.item').forEach(item => {
+                    const input = item.querySelector('.item-input');
+                    const matchesText = !query || item.dataset.search.includes(query);
+                    const matchesFilter = activeFilter === 'all' || (activeFilter === 'selected' && input.checked) || item.dataset.priority === activeFilter;
+                    const show = matchesText && matchesFilter;
+                    item.classList.toggle('dimmed', !show);
+                    if (show) sectionVisible++;
+                });
+                section.style.display = sectionVisible ? '' : 'none';
+                if (query) section.classList.remove('collapsed');
+                visibleItems += sectionVisible;
+            });
+            document.getElementById('empty-state').style.display = visibleItems ? 'none' : 'block';
+        }
+
+        function initEnhancedControls() {
+            document.querySelectorAll('.category').forEach(heading => {
+                heading.setAttribute('role','button');
+                heading.setAttribute('tabindex','0');
+                heading.setAttribute('aria-expanded','true');
+                const toggle = () => {
+                    const card = heading.closest('.section-card');
+                    card.classList.toggle('collapsed');
+                    heading.setAttribute('aria-expanded',String(!card.classList.contains('collapsed')));
+                };
+                heading.addEventListener('click',toggle);
+                heading.addEventListener('keydown',event => {
+                    if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); toggle(); }
+                });
+            });
+            document.getElementById('search-input').addEventListener('input',applyFilters);
+            document.querySelectorAll('.filter-btn').forEach(button => {
+                button.addEventListener('click',() => {
+                    activeFilter = button.dataset.filter;
+                    document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.toggle('active',btn === button));
+                    applyFilters();
+                });
+            });
+            document.querySelectorAll('.item-input').forEach(input => input.addEventListener('change',applyFilters));
+        }
+
+        // 5. 匯出專屬分享 HTML 檔案
+        function exportShareableHTML() {
+            updateDataFromUI();
+            const dataJSON = JSON.stringify(data, null, 12);
+            const newConfigId = `share_${Date.now()}`;
+            
+            let fullHTML = "<!DOCTYPE html>\n<html lang=\"zh-TW\">\n" + document.documentElement.innerHTML + "\n</html>";
+            
+            // 替換 data 資料區塊為當前最新設定
+            const regexData = /\/\* --- DATA_START --- \*\/[\s\S]*?\/\* --- DATA_END --- \*\//;
+            const replacementData = `/* --- DATA_START --- */\n        const data = ${dataJSON};\n        /* --- DATA_END --- */`;
+            fullHTML = fullHTML.replace(regexData, replacementData);
+            
+            // 賦予新檔案獨立識別碼，避免分享給他人時被對方的舊有 LocalStorage 覆蓋
+            const regexConfig = /let CONFIG_ID = ".*?";/;
+            fullHTML = fullHTML.replace(regexConfig, `let CONFIG_ID = "${newConfigId}";`);
+            
+            const now = new Date();
+            const dateStr = `${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}`;
+            const fileName = `25坪裝潢預算清單_專屬配置_${dateStr}.html`;
+
+            const blob = new Blob([fullHTML], { type: 'text/html;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            alert('✅ 成功匯出您的專屬裝潢分享檔案！\n\n此 HTML 檔案已嵌入您當下所有勾選狀態與對應價格。\n您可直接將檔案傳送給家人、設計師或統包師傅，他們用任何瀏覽器開啟即可看見您的專屬客製化清單！');
+        }
+
+        // 6. 重置設定
+        function resetSelections() {
+            if (confirm('確定要重置所有勾選狀態為預設值嗎？\n這將會清除您當前保存於瀏覽器的暫存紀錄。')) {
+                try {
+                    localStorage.removeItem(`renovation_calc_${CONFIG_ID}`);
+                } catch(e){}
+                location.reload();
+            }
+        }
+
+        // 初始化渲染
+        renderChecklist();
+    </script>
+</body>
+</html>
