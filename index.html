@@ -2,8 +2,13 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>25坪 3房2衛 裝潢工期與預算計算機 (智能儲存分級版)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#176b4d">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="裝潢預算">
+    <meta name="description" content="適合手機操作的 25 坪、3 房 2 衛裝潢預算規劃器，可依必備與選配項目即時計算預算。">
+    <title>25 坪裝潢預算規劃器</title>
     <style>
         body {
             font-family: "PingFang TC", "Helvetica Neue", Helvetica, Arial, "Microsoft JhengHei", sans-serif;
@@ -284,21 +289,24 @@
         .footer-actions { display:flex; align-items:center; gap:12px; }
         .selected-count { color:#d5ded8; font-size:.9rem; }
         @media (max-width:760px) {
-            body { padding:0 12px 168px; }
-            .page-header { padding:28px 4px 18px; }
+            html { -webkit-text-size-adjust:100%; }
+            body { padding:0 12px calc(168px + env(safe-area-inset-bottom)); }
+            .page-header { padding:calc(24px + env(safe-area-inset-top)) 4px 18px; }
             .summary-grid { grid-template-columns:1fr 1fr; gap:9px; }
             .summary-card { padding:14px; }
             .summary-card.primary { grid-column:1/-1; }
-            .toolbar { grid-template-columns:1fr; margin-inline:-12px; padding:10px 12px; }
+            .toolbar { grid-template-columns:1fr; margin-inline:-12px; padding:10px 12px; top:env(safe-area-inset-top); }
             .filter-group { overflow-x:auto; flex-wrap:nowrap; padding-bottom:2px; }
             .filter-btn { flex:0 0 auto; }
             .action-bar { align-items:flex-start; }
+            .action-buttons { width:100%; display:grid; grid-template-columns:1fr 1fr; }
+            .btn { justify-content:center; padding:10px; }
             .save-status { width:100%; }
             .item { align-items:flex-start; flex-wrap:wrap; padding:15px 10px; }
             .input-wrapper { padding-top:2px; }
             .item-content { width:calc(100% - 42px); }
             .item-price { width:100%; min-width:0; margin:10px 0 0 42px; text-align:left; font-size:.98rem; }
-            .footer { display:grid; grid-template-columns:1fr 1fr; gap:8px; padding:10px 14px; }
+            .footer { display:grid; grid-template-columns:1fr 1fr; gap:8px; padding:10px 14px calc(10px + env(safe-area-inset-bottom)); }
             .footer .total-value { font-size:1.2rem; }
             .footer-actions { grid-column:1/-1; justify-content:center; }
         }
