@@ -7,8 +7,8 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="裝潢預算">
-    <meta name="description" content="適合手機操作的 25 坪、3 房 2 衛裝潢預算規劃器，可依必備與選配項目即時計算預算。">
-    <title>25 坪裝潢預算規劃器</title>
+    <meta name="description" content="以 2026 年台灣市場價格為基準的 25 坪、3 房 2 衛裝潢預算規劃器，涵蓋工程、設備、家電與家具。">
+    <title>25 坪裝潢預算規劃器｜2026 台灣價格版</title>
     <style>
         body {
             font-family: "PingFang TC", "Helvetica Neue", Helvetica, Arial, "Microsoft JhengHei", sans-serif;
@@ -245,12 +245,16 @@
         .eyebrow { margin:0 0 6px; color:var(--brand); font-weight:800; letter-spacing:.12em; font-size:.78rem; }
         h1 { text-align:left; font-size:clamp(1.8rem,4vw,2.7rem); margin:0; letter-spacing:-.03em; }
         .subtitle { text-align:left; margin:8px 0 0; max-width:760px; color:var(--muted); font-size:1rem; }
-        .summary-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:24px; }
+        .summary-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-top:24px; }
         .summary-card { background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:18px 20px; box-shadow:0 8px 24px rgba(31,54,41,.05); }
         .summary-card span { display:block; color:var(--muted); font-size:.85rem; font-weight:700; }
         .summary-card strong { display:block; margin-top:3px; font-size:1.35rem; letter-spacing:-.02em; }
         .summary-card.primary { background:var(--brand); color:#fff; border-color:var(--brand); }
         .summary-card.primary span { color:#d5eee2; }
+        .basis-panel { margin-top:14px; padding:14px 16px; border:1px solid #cfe0d6; border-radius:14px; background:#f7fbf8; color:#415048; font-size:.9rem; }
+        .basis-panel strong { color:var(--brand); }
+        .basis-panel ul { margin:7px 0 0; padding-left:1.25rem; }
+        .basis-panel li + li { margin-top:3px; }
         .container { max-width:1120px; padding:0; background:transparent; box-shadow:none; }
         .toolbar { position:sticky; top:0; z-index:20; display:grid; grid-template-columns:minmax(240px,1fr) auto; gap:12px; align-items:center; padding:14px; margin-bottom:18px; background:rgba(244,247,244,.94); backdrop-filter:blur(12px); border-bottom:1px solid var(--line); }
         .search-wrap { position:relative; }
@@ -281,7 +285,8 @@
         input[type="checkbox"],input[type="radio"] { width:22px; height:22px; accent-color:var(--brand); }
         .item-title { color:var(--ink); }
         .item-desc { color:var(--muted); }
-        .item-price { color:#9c3e37; min-width:170px; font-variant-numeric:tabular-nums; }
+        .item-price { color:#9c3e37; min-width:190px; font-variant-numeric:tabular-nums; }
+        .price-flag { display:inline-block; margin-left:6px; padding:1px 6px; border-radius:999px; background:#e6f4ec; color:#176b4d; font-size:.72rem; vertical-align:2px; }
         .time-tag { background:#eef5f1; color:#38634f; border-color:#cfe0d6; }
         .empty-state { display:none; padding:56px 20px; text-align:center; color:var(--muted); }
         .footer { padding:12px max(20px,calc((100vw - 1120px)/2)); justify-content:space-between; background:#17211b; }
@@ -295,6 +300,7 @@
             .summary-grid { grid-template-columns:1fr 1fr; gap:9px; }
             .summary-card { padding:14px; }
             .summary-card.primary { grid-column:1/-1; }
+            .basis-panel { padding:12px 14px; }
             .toolbar { grid-template-columns:1fr; margin-inline:-12px; padding:10px 12px; top:env(safe-area-inset-top); }
             .filter-group { overflow-x:auto; flex-wrap:nowrap; padding-bottom:2px; }
             .filter-btn { flex:0 0 auto; }
@@ -315,31 +321,40 @@
 <body>
 
     <header class="page-header">
-        <p class="eyebrow">25 坪・3 房 2 衛</p>
+        <p class="eyebrow">2026 Q3 台灣市場概算・25 坪・3 房 2 衛</p>
         <h1>裝潢預算規劃器</h1>
-        <p class="subtitle">勾選想做的工程與設備，即時掌握預算範圍。必備與選配已分級整理，選擇會自動保存在這台裝置。</p>
-        <div class="summary-grid" aria-label="預算摘要">
-            <div class="summary-card primary"><span>目前預算區間</span><strong id="range-summary">NT$ 0 ～ 0</strong></div>
+        <p class="subtitle">從基礎工程、空調、廚衛、智慧家庭到家具家電，依實際需求單選或複選，即時掌握較完整的台灣裝修預算範圍。</p>
+        <section class="summary-grid" aria-label="預算摘要">
+            <div class="summary-card primary"><span>目前實際成本概算（不含可退保證金）</span><strong id="range-summary">NT$ 0 ～ 0</strong></div>
             <div class="summary-card"><span>已選項目</span><strong id="selected-summary">0 項</strong></div>
             <div class="summary-card"><span>總項目</span><strong id="all-summary">0 項</strong></div>
+            <div class="summary-card"><span>另備可退保證金</span><strong id="refundable-summary">NT$ 0 ～ 0</strong></div>
+        </section>
+        <div class="basis-panel">
+            <strong>價格怎麼看：</strong>
+            <ul>
+                <li>以 2026 年台灣可購通路與北中南常見工程價為基準；雙北、無電梯、施工受限或高階材料通常接近上限。</li>
+                <li>工程選項已盡量標明「含／不含」範圍；同一區域若已由套裝工程包含，請勿再次勾選。</li>
+                <li>本工具適合前期抓預算，正式決策仍以現場丈量、用料規格、數量表與至少 2～3 份同口徑報價為準。</li>
+            </ul>
         </div>
     </header>
 
     <div class="container">
-        <div class="toolbar" aria-label="清單工具">
+        <div class="toolbar" role="search" aria-label="清單工具">
             <label class="search-wrap"><span aria-hidden="true">⌕</span><input id="search-input" type="search" placeholder="搜尋工程、設備或品牌…" autocomplete="off"></label>
-            <div class="filter-group" aria-label="篩選項目">
-                <button class="filter-btn active" data-filter="all">全部</button>
-                <button class="filter-btn" data-filter="selected">已選</button>
-                <button class="filter-btn" data-filter="essential">必備</button>
-                <button class="filter-btn" data-filter="optional">選配</button>
+            <div class="filter-group" role="group" aria-label="篩選項目">
+                <button type="button" class="filter-btn active" data-filter="all">全部</button>
+                <button type="button" class="filter-btn" data-filter="selected">已選</button>
+                <button type="button" class="filter-btn" data-filter="essential">必備</button>
+                <button type="button" class="filter-btn" data-filter="optional">選配</button>
             </div>
         </div>
-        
+
         <div class="action-bar">
             <div class="action-buttons">
-                <button class="btn btn-save" onclick="exportShareableHTML()">💾 另存成可分享 HTML 檔</button>
-                <button class="btn btn-reset" onclick="resetSelections()">🔄 重置預設選擇</button>
+                <button type="button" class="btn btn-save" onclick="exportShareableHTML()">💾 另存成可分享 HTML 檔</button>
+                <button type="button" class="btn btn-reset" onclick="resetSelections()">🔄 重置預設選擇</button>
             </div>
             <div class="save-status" id="save-status">💡 您的勾選變更皆會自動儲存於瀏覽器中</div>
         </div>
@@ -350,11 +365,11 @@
 
     <div class="footer">
         <div class="total-box">
-            <div class="total-label">預算加總 (最低概算)</div>
+            <div class="total-label">實際成本（最低概算）</div>
             <div class="total-value" id="min-total">NT$ 0</div>
         </div>
         <div class="total-box">
-            <div class="total-label">預算加總 (最高概算)</div>
+            <div class="total-label">實際成本（最高概算）</div>
             <div class="total-value" id="max-total">NT$ 0</div>
         </div>
         <div class="footer-actions"><span class="selected-count" id="footer-count">已選 0 項</span></div>
@@ -362,199 +377,444 @@
 
     <script>
         // 專案配置識別碼（用於確保匯出檔案不會與舊有暫存衝突）
-        let CONFIG_ID = "renovation_25ping_default";
+        let CONFIG_ID = "renovation_25ping_tw_2026q3_v3";
 
-        /* --- DATA_START --- */
+/* --- DATA_START --- */
         const data = [
             {
-                category: "一、 基礎拆除、泥作與油漆工程",
+                category: "一、施工前檢查與現場保護（複選）",
                 type: "checkbox",
+                note: "先確認屋況、社區規範與施工動線，能降低追加預算。以下為 25 坪集合住宅常見總價。",
                 items: [
-                    { title: '廚房全面打除與重作工程 (約3-4坪) <span class="time-tag">⏱️ 約 10~14 天</span>', desc: "舊廚房打除見底，重新拉設水電管線、貼新壁磚與地磚，包含全新整套廚具設備（含人造石/石英石檯面與防蟑系統櫃）。", min: 180000, max: 350000, checked: true, priority: "essential" },
-                    { title: '雙衛浴局部維護工程 <span class="time-tag">⏱️ 約 1~3 天</span>', desc: "不打除舊磚。針對老化矽利康重新施打、局部填縫修補，以及舊五金拆除與漏水檢測。", min: 20000, max: 45000, checked: true, priority: "essential" },
-                    { title: '客廳凸牆敲除與水泥回填 <span class="time-tag">⏱️ 約 1~2 天</span>', desc: "敲除半天、抹平半天，需留1天讓水泥乾透養護。", min: 5000, max: 15000, checked: true, priority: "essential" },
-                    { title: '全室批土油漆 (得利/虹牌) <span class="time-tag">⏱️ 約 5~7 天</span>', desc: "全屋全室AB膠補縫、2-3次全面批土細磨與上漆，工期最扎實的一環。", min: 60000, max: 110000, checked: true, priority: "essential" }
+                    { title: '基礎屋況健檢與現場丈量 <span class="time-tag">⏱️ 約 0.5～1 天</span>', desc: "檢查滲漏水、空鼓、窗框、排水、配電容量與地坪高差；中古屋或屋齡 15 年以上建議列入。", min: 8000, max: 25000, checked: true, priority: "essential" },
+                    { title: '電路與給排水專項檢測 <span class="time-tag">⏱️ 約 0.5～1 天</span>', desc: "含絕緣、漏電、接地、水壓與排水測試；若已包含在統包前勘可取消。", min: 5000, max: 15000, checked: false, priority: "optional" },
+                    { title: '電梯、梯廳與室內成品保護 <span class="time-tag">⏱️ 約 1 天</span>', desc: "含保護板、養生膠帶與施工期間維護；社區指定規格或長工期會較高。", min: 15000, max: 40000, checked: true, priority: "essential" },
+                    { title: '施工區防塵隔離與空氣清淨 <span class="time-tag">⏱️ 約半天</span>', desc: "局部施工且仍有人居住時適用，含防塵門、保護膜與負壓／集塵設備。", min: 5000, max: 18000, checked: false, priority: "optional" },
+                    { title: '白蟻／病媒檢查與局部防治 <span class="time-tag">⏱️ 約半天</span>', desc: "一樓、頂樓、木作多或曾有蟲害時建議；大面積灌藥另計。", min: 6000, max: 18000, checked: false, priority: "optional" }
                 ]
             },
             {
-                category: "一之二、 全屋水電工程（獨立類別）",
+                category: "二、拆除、泥作與清運（複選）",
                 type: "checkbox",
-                note: "⚠️ 水電工程為最優先施工項目，須在泥作封牆前完成配管，並優先確認冷氣、全熱交換器管路位置：",
+                note: "廚房與衛浴的套裝工程已含其區域拆除時，請勿重複勾選同一範圍。",
                 items: [
-                    { title: '全屋水電與總配電盤更新 <span class="time-tag">⏱️ 約 5~7 天</span>', desc: "全室打牆配管引線，包含配合全新廚房的高功率專用迴路（洗碗機、烤箱、冷氣）。", min: 180000, max: 280000, checked: true, priority: "essential" },
-                    { title: '全戶追加升級大量插座 (含USB/Type-C面板) <span class="time-tag">⏱️ 約 1~2 天</span>', desc: "評估現代多裝置需求，於沙發左右、中島、床頭與書桌大幅增加插座點位，並升級國際牌星鑽或中一電工等高階面板。", min: 15000, max: 30000, checked: true, priority: "optional" },
-                    { title: '掃地機「自動上下水」專用管線預留 <span class="time-tag">⏱️ 約半天</span>', desc: "水電師傅配合玄關櫃或電視櫃，預留進排水管與獨立插座。", min: 8000, max: 15000, checked: true, priority: "optional" }
+                    { title: '局部隔間／凸牆拆除與收邊 <span class="time-tag">⏱️ 約 1～3 天</span>', desc: "以非承重輕隔間或小面積磚牆計；施工前需確認結構、管線與大樓規範。", min: 12000, max: 40000, checked: true, priority: "essential" },
+                    { title: '舊天花板拆除 <span class="time-tag">⏱️ 約 1～3 天</span>', desc: "約 15～25 坪，含拆板、骨架分類與搬運；不含新天花板。", min: 30000, max: 75000, checked: false, priority: "optional" },
+                    { title: '舊地坪／木地板拆除 <span class="time-tag">⏱️ 約 2～4 天</span>', desc: "約 18～22 坪；磁磚打除、架高地板或無電梯搬運會提高費用。", min: 45000, max: 120000, checked: false, priority: "optional" },
+                    { title: '牆面打底、粉光與局部泥作修補 <span class="time-tag">⏱️ 約 2～5 天</span>', desc: "拆除後牆面回補、門洞修整與局部磁磚；大面積打底應依才數另報。", min: 30000, max: 100000, checked: true, priority: "essential" },
+                    { title: '裝潢廢棄物清運與搬運 <span class="time-tag">⏱️ 約 0.5 天／車</span>', desc: "約 2～4 車的中度裝修量；樓層、電梯保護、停車距離與合法清運方式均會影響價格。", min: 30000, max: 90000, checked: true, priority: "essential" }
                 ]
             },
             {
-                category: "一之三、 天花板木工工程",
-                type: "checkbox",
-                note: "⚠️ 天花板為全熱交換器、吊隱除濕機、冷氣管路的施工載體，必須在封板前確認所有設備選型與位置：",
+                category: "三、廚房工程範圍（單選）",
+                type: "radio",
+                name: "kitchen_scope",
+                note: "以約 3～4 坪一字型／L 型廚房估算。電器另於後方選擇，避免重複計價。",
                 items: [
-                    { title: '全室天花板木工工程（平釘+造型） <span class="time-tag">⏱️ 約 5~8 天</span>', desc: "包含客廳間接照明層次、冷氣出回風口包覆、全熱交換器及除濕機吊掛空間、燈具出線預留開孔。", min: 80000, max: 160000, checked: true, priority: "essential" }
+                    { title: '沿用原廚房／暫不施工', desc: "僅做清潔與基本檢查，未計入設備汰換。", min: 0, max: 0, checked: false, priority: "essential" },
+                    { title: '門片、五金與檯面局部翻新 <span class="time-tag">⏱️ 約 3～7 天</span>', desc: "保留櫃體與格局，更換門片、鉸鏈、把手或局部檯面；不含全面管線更新。", min: 50000, max: 130000, checked: false, priority: "optional" },
+                    { title: '廚具與檯面更新（保留牆地面） <span class="time-tag">⏱️ 約 7～14 天</span>', desc: "含拆舊廚具、國產系統廚具、人造石／入門石英石檯面、水槽龍頭與基本安裝；不含大型家電。", min: 180000, max: 330000, checked: false, priority: "essential" },
+                    { title: '廚房全面拆除重作 <span class="time-tag">⏱️ 約 14～25 天</span>', desc: "含區域拆除、基礎水電、泥作防水、牆地磚、系統廚具與檯面；進口五金、特殊石材及電器另計。", min: 350000, max: 650000, checked: true, priority: "essential" },
+                    { title: '中島／半島與高階廚具升級 <span class="time-tag">⏱️ 約 20～35 天</span>', desc: "全室重作並加入中島、石英石／陶板檯面、進口五金與較多收納；仍不含大型家電。", min: 600000, max: 1000000, checked: false, priority: "optional" }
                 ]
             },
             {
-                category: "一之四、 地坪工程",
-                type: "checkbox",
+                category: "四、雙衛浴工程範圍（單選）",
+                type: "radio",
+                name: "bathroom_scope",
+                note: "以兩間一般集合住宅衛浴估算。暖風機、馬桶、浴櫃等設備可於後方另外選擇。",
                 items: [
-                    { title: '全屋木地板 (Ua Floors) <span class="time-tag">⏱️ 約 1~2 天</span>', desc: "於裝潢極尾聲（細清前）進場鋪設，約20坪實坪一天半可完工。", min: 100000, max: 180000, checked: true, priority: "essential" }
+                    { title: '沿用原衛浴／暫不施工', desc: "僅保留原況，不含矽利康、填縫或設備維修。", min: 0, max: 0, checked: false, priority: "essential" },
+                    { title: '雙衛浴基礎維護 <span class="time-tag">⏱️ 約 1～3 天</span>', desc: "矽利康、填縫、落水頭與五金局部更新，並做基本漏水檢視；不敲磚、不重做防水。", min: 20000, max: 55000, checked: true, priority: "essential" },
+                    { title: '雙衛浴設備與表面局部更新 <span class="time-tag">⏱️ 約 4～10 天</span>', desc: "保留防水與主要磁磚，更新部分衛浴設備、天花與局部貼磚；若發現漏水需轉全面重作。", min: 120000, max: 280000, checked: false, priority: "optional" },
+                    { title: '一間全面重作＋一間基礎維護 <span class="time-tag">⏱️ 約 15～25 天</span>', desc: "一間拆除、防水試水、泥作貼磚與基礎設備安裝，另一間做矽利康及五金維護。", min: 200000, max: 380000, checked: false, priority: "essential" },
+                    { title: '雙衛浴全面拆除重作 <span class="time-tag">⏱️ 約 25～40 天</span>', desc: "含兩間拆除、給排水調整、防水試水、泥作貼磚與基礎設備安裝；高階進口設備另計。", min: 400000, max: 750000, checked: false, priority: "essential" }
                 ]
             },
             {
-                category: "一之五、 工程行政費用",
-                type: "checkbox",
+                category: "五、全屋水電更新級距（單選）",
+                type: "radio",
+                name: "mep_scope",
+                note: "屋齡、是否抽換舊線、管線能否沿用及迴路數量，是水電報價差異最大的原因。",
                 items: [
-                    { title: '大樓裝修保證金 <span class="time-tag">⏱️ 工期 0 天</span>', desc: "依各社區管委會規定，通常需於開工前繳交，完工驗收後退還。", min: 20000, max: 60000, checked: true, priority: "essential" },
-                    { title: '裝潢廢棄物清運費（複數車次） <span class="time-tag">⏱️ 約半天/車</span>', desc: "廚房全室打除＋凸牆拆除，廢棄物量大，預估 2～3 車次。", min: 30000, max: 84000, checked: true, priority: "essential" },
-                    { title: '室內裝修許可申請費 <span class="time-tag">⏱️ 約 2~4 週審查</span>', desc: "變更天花板或隔間依法須申請，建議委託設計師代辦。", min: 8000, max: 25000, checked: true, priority: "essential" },
-                    { title: '工程期間大樓公共區域清潔費 <span class="time-tag">⏱️ 整個工期</span>', desc: "依社區規定，工班進出走廊、電梯每日或每月計費。", min: 3000, max: 15000, checked: true, priority: "essential" },
-                    { title: '裝潢收尾細清（專業工程清潔） <span class="time-tag">⏱️ 約 1~2 天</span>', desc: "木工粉塵、玻璃膠殘留、地板保護膜撕除等專業清潔。", min: 8000, max: 15000, checked: true, priority: "essential" }
+                    { title: '沿用既有水電／僅檢測', desc: "不更動幹線，只做安全檢測；若發現老化或容量不足需另估。", min: 0, max: 15000, checked: false, priority: "essential" },
+                    { title: '局部更新與新增迴路 <span class="time-tag">⏱️ 約 3～7 天</span>', desc: "廚房、衛浴與高耗能設備局部換線配管，約 4～8 組新迴路；不含全戶換管線。", min: 100000, max: 200000, checked: false, priority: "essential" },
+                    { title: '中度更新（主要幹線＋重點區域） <span class="time-tag">⏱️ 約 5～10 天</span>', desc: "更新配電盤與主要幹線，廚房、衛浴、冷氣等重點區域換線，給排水局部更新。", min: 180000, max: 300000, checked: false, priority: "essential" },
+                    { title: '全屋電線、配電盤與給排水重拉 <span class="time-tag">⏱️ 約 8～15 天</span>', desc: "25 坪全室換線配管、配電盤、接地、專用迴路與主要冷熱水管；特殊消防、三相電或管道間工程另計。", min: 280000, max: 450000, checked: true, priority: "essential" }
                 ]
             },
             {
-                category: "一之六、 全室冷氣工程 (單選)",
+                category: "六、水電機能追加（複選）",
+                type: "checkbox",
+                note: "若已包含在上一項總包報價，請取消勾選，並在估價單確認點位與線徑。",
+                items: [
+                    { title: '追加一般插座與網路電源點（約 15～25 點） <span class="time-tag">⏱️ 約 1～3 天</span>', desc: "含基本面板、線材與配管；USB-C、高階面板、明管或長距離拉線會另加價。", min: 30000, max: 70000, checked: true, priority: "optional" },
+                    { title: '220V／高功率專用迴路（約 4～6 組） <span class="time-tag">⏱️ 約 1～2 天</span>', desc: "供烤箱、IH、洗碗機、乾衣機或冷氣使用；依線徑、距離與斷路器規格估價。", min: 20000, max: 60000, checked: true, priority: "essential" },
+                    { title: '掃地機器人自動上下水預留 <span class="time-tag">⏱️ 約半天</span>', desc: "含進水、排水、止水閥與插座，建議設於玄關／家事櫃並保留維修空間。", min: 8000, max: 20000, checked: true, priority: "optional" },
+                    { title: '全戶恆壓馬達與管路調整 <span class="time-tag">⏱️ 約半天～1 天</span>', desc: "高樓層、水壓不足或同時使用雙衛浴時評估；需先確認大樓規範與噪音。", min: 20000, max: 55000, checked: false, priority: "optional" },
+                    { title: '漏水偵測器＋自動關水閥 <span class="time-tag">⏱️ 約半天～1 天</span>', desc: "廚房、洗衣區與兩衛浴配置感測器，主閥需有可施工空間。", min: 12000, max: 35000, checked: false, priority: "optional" }
+                ]
+            },
+            {
+                category: "七、天花板工程（單選）",
+                type: "radio",
+                name: "ceiling_scope",
+                note: "全熱、吊隱除濕與冷氣配管須在封板前定案；造型越多，油漆與燈具費也會同步增加。",
+                items: [
+                    { title: '不做天花板／保留原頂', desc: "僅整理明管與既有燈點，適合追求樓高或無吊隱設備的空間。", min: 0, max: 15000, checked: false, priority: "essential" },
+                    { title: '局部包樑、窗簾盒與冷氣管線 <span class="time-tag">⏱️ 約 2～5 天</span>', desc: "只處理客餐廳及必要管線，較能保留樓高。", min: 35000, max: 90000, checked: false, priority: "optional" },
+                    { title: '公共區域平釘天花板 <span class="time-tag">⏱️ 約 4～7 天</span>', desc: "客餐廳、走道約 10～15 坪，含基礎骨架與板材；批土油漆另於油漆項估算。", min: 65000, max: 130000, checked: false, priority: "essential" },
+                    { title: '全室平釘天花板 <span class="time-tag">⏱️ 約 6～10 天</span>', desc: "約 20～25 坪，含維修孔與設備開孔；特殊防潮板、隔音棉另計。", min: 110000, max: 190000, checked: true, priority: "essential" },
+                    { title: '全室平釘＋間接照明／造型 <span class="time-tag">⏱️ 約 8～14 天</span>', desc: "含多段層次、燈槽與較複雜收邊；不含燈具與油漆。", min: 170000, max: 320000, checked: false, priority: "optional" }
+                ]
+            },
+            {
+                category: "八、全室地坪（單選）",
+                type: "radio",
+                name: "flooring_scope",
+                note: "以約 18～22 坪實鋪面積含基本施工估算；拆除、嚴重整平、架高與特殊收邊另計。",
+                items: [
+                    { title: '沿用既有地坪／局部修補', desc: "不鋪新地板，只做局部填縫、補色或收邊。", min: 0, max: 20000, checked: false, priority: "essential" },
+                    { title: 'SPC 石塑卡扣地板 <span class="time-tag">⏱️ 約 1～3 天</span>', desc: "耐磨、防潑水且預算較低；需注意底層平整度與日照熱脹冷縮。", min: 65000, max: 110000, checked: false, priority: "essential" },
+                    { title: '超耐磨木地板 <span class="time-tag">⏱️ 約 2～4 天</span>', desc: "台灣常見國產／進口耐磨地板，含基本防潮墊與收邊。", min: 90000, max: 160000, checked: false, priority: "essential" },
+                    { title: '海島型／工程木地板 <span class="time-tag">⏱️ 約 2～5 天</span>', desc: "木皮質感與穩定性兼具；木種、厚度、直鋪或平鋪工法差異大。", min: 130000, max: 250000, checked: false, priority: "optional" },
+                    { title: 'Ua Floors 等台灣高階工程木地板 <span class="time-tag">⏱️ 約 2～5 天</span>', desc: "以台灣通路高階系列、基本施工與收邊估算；特殊拼法與樓梯另計。", min: 170000, max: 300000, checked: true, priority: "optional" },
+                    { title: '全室磁磚／大板磚地坪 <span class="time-tag">⏱️ 約 7～14 天</span>', desc: "含一般國產磚與鋪貼；拆舊、整平、大尺寸薄板與特殊美縫另計。", min: 180000, max: 380000, checked: false, priority: "optional" }
+                ]
+            },
+            {
+                category: "九、全室油漆與牆面（單選）",
+                type: "radio",
+                name: "paint_scope",
+                note: "以 25 坪、一般室內高度估算。漏水、壁癌、深色改淺色與木作面積會增加工序。",
+                items: [
+                    { title: '局部補漆與裂縫修補 <span class="time-tag">⏱️ 約 2～4 天</span>', desc: "適合牆況良好，只修補施工受損區域。", min: 30000, max: 65000, checked: false, priority: "essential" },
+                    { title: '全室基礎乳膠漆更新 <span class="time-tag">⏱️ 約 4～7 天</span>', desc: "局部批土、打磨、底漆與面漆；不含全室重新批土。", min: 55000, max: 105000, checked: false, priority: "essential" },
+                    { title: '全室批土整平＋乳膠漆 <span class="time-tag">⏱️ 約 7～12 天</span>', desc: "含裂縫處理、2～3 道批土細磨、底漆與得利／虹牌同級面漆。", min: 95000, max: 170000, checked: true, priority: "essential" },
+                    { title: '高階特殊塗料／藝術漆 <span class="time-tag">⏱️ 約 8～15 天</span>', desc: "以重點牆搭配全室乳膠漆估算；礦物塗料、灰泥與進口藝術漆依樣板另報。", min: 160000, max: 320000, checked: false, priority: "optional" }
+                ]
+            },
+            {
+                category: "十、設計與監工服務（單選）",
+                type: "radio",
+                name: "design_service",
+                note: "設計費常以坪數計價，工程管理費亦可能按工程款比例計收；簽約前確認是否已含在總價。",
+                items: [
+                    { title: '自主管理／統包直接承攬', desc: "未另計設計費；仍應取得平面、插座、燈具及設備定位圖。", min: 0, max: 30000, checked: true, priority: "essential" },
+                    { title: '丈量、平面配置與施工圖 <span class="time-tag">⏱️ 約 2～4 週</span>', desc: "適合格局單純、由統包施工但需要完整圖面者。", min: 60000, max: 130000, checked: false, priority: "optional" },
+                    { title: '完整設計＋定期監工 <span class="time-tag">⏱️ 約 1～2 個月設計</span>', desc: "含提案、3D／材質、施工圖與階段監工；不含工程款。", min: 180000, max: 380000, checked: false, priority: "optional" },
+                    { title: '高客製設計與全程工程管理', desc: "複雜格局、訂製細節與高密度現場管理；實際可能另收工程管理費。", min: 300000, max: 550000, checked: false, priority: "optional" }
+                ]
+            },
+            {
+                category: "十一、行政、保證金與收尾（複選）",
+                type: "checkbox",
+                items: [
+                    { title: '大樓裝修保證金（完工驗收後可退）', desc: "屬施工期間現金需求，不是最終成本；各社區規定差異大。", min: 20000, max: 80000, checked: true, priority: "essential", refundable: true },
+                    { title: '室內裝修審查／許可與簽證 <span class="time-tag">⏱️ 約 2～6 週</span>', desc: "涉及天花板、分間牆或法規要求時適用；依縣市、圖說與簽證範圍調整。", min: 25000, max: 70000, checked: true, priority: "essential" },
+                    { title: '工程期間公共區域清潔／管理費', desc: "社區可能按日、週或月收費，另含施工人員證件與電梯使用費。", min: 5000, max: 25000, checked: true, priority: "essential" },
+                    { title: '臨時水電、消防器材與工地保險', desc: "依統包合約與社區要求；若總包已含應取消。", min: 5000, max: 20000, checked: false, priority: "optional" },
+                    { title: '完工專業細清 <span class="time-tag">⏱️ 約 1～2 天</span>', desc: "25 坪中度裝修，含粉塵、櫃內、玻璃與地坪基礎清潔；除膠、石材美容另計。", min: 15000, max: 30000, checked: true, priority: "essential" },
+                    { title: '驗屋／完工第三方驗收', desc: "檢查空鼓、漏水、電路、門片與設備功能，並產出缺失清單。", min: 10000, max: 30000, checked: false, priority: "optional" }
+                ]
+            },
+            {
+                category: "十二、全室冷氣系統（單選）",
                 type: "radio",
                 name: "aircon_system",
-                note: "⚠️ 須在天花板封板前確認機型與管路位置：",
+                note: "以客餐廳＋3 房約 4～5 台室內機估算，含標準安裝與合理長度配管；吊車、洗孔、長配管及裝飾另計。",
                 items: [
-                    { title: '大金 DAIKIN 分離式多聯機（3對5） <span class="time-tag">⏱️ 約 2~3 天</span>', desc: "1台室外機帶5台室內機，省空間、節電效率高。連工帶料含冷媒配管。", min: 150000, max: 220000, checked: true, priority: "essential" },
-                    { title: '三菱重工 MHIAA 分離式（各房獨立） <span class="time-tag">⏱️ 約 2~3 天</span>', desc: "各房間獨立迴路，可彈性開關單一空間。含安裝、冷媒管配管。", min: 130000, max: 200000, checked: false, priority: "essential" },
-                    { title: 'Panasonic 分離式（各房獨立）<span class="time-tag">⏱️ 約 2~3 天</span>', desc: "日系變頻，耐用口碑佳，台灣售後維修方便。", min: 120000, max: 185000, checked: false, priority: "essential" },
-                    { title: '沿用舊機或不裝冷氣 <span class="time-tag">⏱️ 工期 0 天</span>', desc: "保留原有舊冷氣或自行另外處理，僅需請水電/木工注意舊管線包覆。", min: 0, max: 0, checked: false, priority: "essential" }
+                    { title: '沿用舊機／暫不安裝', desc: "僅保留或整理舊管線；舊機移機、清洗與補冷媒另計。", min: 0, max: 30000, checked: false, priority: "essential" },
+                    { title: 'Panasonic 變頻分離式（各區獨立） <span class="time-tag">⏱️ 約 2～4 天</span>', desc: "台灣通路常見機種，依冷房能力與室內機數量配置。", min: 160000, max: 260000, checked: false, priority: "essential" },
+                    { title: '三菱重工 MHIAA 變頻分離式（各區獨立） <span class="time-tag">⏱️ 約 2～4 天</span>', desc: "以 4～5 台一對一機型與標準安裝估算。", min: 175000, max: 280000, checked: false, priority: "essential" },
+                    { title: '日立 HITACHI 變頻分離式（各區獨立） <span class="time-tag">⏱️ 約 2～4 天</span>', desc: "依頂級／精品系列、能力級距與配管長度浮動。", min: 180000, max: 290000, checked: false, priority: "optional" },
+                    { title: '大金 DAIKIN 變頻分離式（各區獨立） <span class="time-tag">⏱️ 約 2～4 天</span>', desc: "一對一系統維修彈性較高，但室外機數量較多。", min: 190000, max: 310000, checked: false, priority: "optional" },
+                    { title: '大金／日系多聯式（1 對 4～5） <span class="time-tag">⏱️ 約 3～5 天</span>', desc: "適合室外機空間有限；主機故障時影響範圍較大，需確認同開率與管長。", min: 230000, max: 380000, checked: true, priority: "essential" },
+                    { title: '吊隱式冷氣＋線型出風整合 <span class="time-tag">⏱️ 約 4～7 天</span>', desc: "含基本風管、回風與冷媒配管；需搭配天花板高度、維修孔與排水規劃。", min: 320000, max: 550000, checked: false, priority: "optional" }
                 ]
             },
             {
-                category: "一之七、 全室燈具規劃與安裝",
+                category: "十三、全室基礎照明（單選）",
+                type: "radio",
+                name: "lighting_level",
+                items: [
+                    { title: '沿用原燈具／僅換燈泡', desc: "不更動主要燈點與燈具。", min: 0, max: 10000, checked: false, priority: "essential" },
+                    { title: '基本吸頂燈與筒燈配置 <span class="time-tag">⏱️ 約 1 天</span>', desc: "客餐廳、走道與 3 房的國產燈具及基本安裝。", min: 30000, max: 65000, checked: false, priority: "essential" },
+                    { title: '分區調光與中階燈具配置 <span class="time-tag">⏱️ 約 1～2 天</span>', desc: "含較多筒燈、軌道燈、吊燈與分區控制，適合一般設計裝修。", min: 60000, max: 130000, checked: true, priority: "essential" },
+                    { title: '高演色／智慧調光照明 <span class="time-tag">⏱️ 約 2～3 天</span>', desc: "高演色燈具、情境控制與較多回路；設計品牌吊燈可再上浮。", min: 120000, max: 260000, checked: false, priority: "optional" }
+                ]
+            },
+            {
+                category: "十四、照明與用電升級（複選）",
                 type: "checkbox",
                 items: [
-                    { title: '全室燈具採購與安裝 (客廳+餐廳+各房) <span class="time-tag">⏱️ 約 1 天</span>', desc: "由水電師傅裝潢尾聲統一安裝。費用含燈具本體，依品牌與造型差異大。", min: 25000, max: 55000, checked: true, priority: "essential" },
-                    { title: '廚房工作燈與層板燈（廚具廠商含安裝）<span class="time-tag">⏱️ 約 2 小時</span>', desc: "通常由廚具廠商配套安裝，確認報價含燈具。", min: 5000, max: 12000, checked: true, priority: "optional" }
+                    { title: '廚房檯面工作燈／櫃下燈', desc: "含 LED 燈具、鋁槽、驅動器與安裝；確認廚具報價是否已含。", min: 6000, max: 18000, checked: true, priority: "essential" },
+                    { title: '窗簾盒與櫃體間接燈帶', desc: "約 10～20 米，含鋁槽、電源與基本控制；RGB／智慧控制另計。", min: 15000, max: 45000, checked: true, priority: "optional" },
+                    { title: '玄關、走道與床下感應夜燈', desc: "含 3～6 組感應器與燈具，適合孩童與夜間動線。", min: 6000, max: 18000, checked: false, priority: "optional" },
+                    { title: '餐桌設計吊燈／重點燈具', desc: "單盞或組合燈具含安裝；精品進口燈不在此價格帶內。", min: 8000, max: 40000, checked: false, priority: "optional" }
                 ]
             },
             {
-                category: "二、 全熱交換機 (單選)",
+                category: "十五、全熱交換／新風系統（單選）",
                 type: "radio",
                 name: "erv_system",
+                note: "總價應同時確認主機、風管、風口、保溫、洗孔、控制器、安裝與試運轉，不能只比較主機價格。",
                 items: [
-                    { title: 'Panasonic 頂級全熱交換器 (FY-E150) <span class="time-tag">⏱️ 約 1~2 天</span>', desc: "需於木工封板前進場吊掛與拉風管。", min: 75000, max: 95000, checked: true, priority: "optional" },
-                    { title: '大金 DAIKIN 全熱交換器 (VAM150) <span class="time-tag">⏱️ 約 1~2 天</span>', desc: "保濕與熱交換技術優異，需與木工配合進場。", min: 85000, max: 110000, checked: false, priority: "optional" },
-                    { title: '不裝全熱交換器 <span class="time-tag">⏱️ 工期 0 天</span>', desc: "維持天花板高度，改為自行開窗通風。", min: 0, max: 0, checked: false, priority: "optional" }
+                    { title: '不裝全熱交換器', desc: "以開窗、浴室排風與空氣清淨機維持通風。", min: 0, max: 0, checked: false, priority: "optional" },
+                    { title: '壁掛式新風機（2～3 台）', desc: "免做大範圍風管，適合無全室天花板；隔音與外牆鑽孔需現勘。", min: 35000, max: 80000, checked: false, priority: "optional" },
+                    { title: 'Panasonic 吊隱全熱交換系統 <span class="time-tag">⏱️ 約 2～4 天</span>', desc: "以 25 坪所需主機、全室風管、風口、保溫與標準安裝估算。", min: 110000, max: 190000, checked: true, priority: "optional" },
+                    { title: 'DAIKIN 吊隱全熱交換系統 <span class="time-tag">⏱️ 約 2～4 天</span>', desc: "含適用級距主機與完整風管施工；控制整合與長距離外氣管另計。", min: 120000, max: 210000, checked: false, priority: "optional" },
+                    { title: '高階恆氧／除 PM2.5 新風系統', desc: "含高效濾網、較完整控制與風量平衡；耗材與後續維護成本較高。", min: 180000, max: 320000, checked: false, priority: "optional" }
                 ]
             },
             {
-                category: "二之二、 全戶中央除濕機 (單選)",
+                category: "十六、全戶除濕方案（單選）",
                 type: "radio",
                 name: "dehumidifier_system",
+                note: "原清單的 Panasonic F-YV50LX 為移動式除濕機，已改列於移動式方案，不再誤列為吊隱機。",
                 items: [
-                    { title: 'Panasonic 吊隱除濕機 (F-YV50LX) <span class="time-tag">⏱️ 約 1 天</span>', desc: "與冷氣、全熱同步進場吊掛，拉獨立排水管。", min: 75000, max: 90000, checked: true, priority: "optional" },
-                    { title: 'Honeywell 中央除濕機 (美系大風量) <span class="time-tag">⏱️ 約 1 天</span>', desc: "大風量強效除濕，與風管配管同步施作。", min: 80000, max: 105000, checked: false, priority: "optional" },
-                    { title: '不裝全戶除濕機 <span class="time-tag">⏱️ 工期 0 天</span>', desc: "省下天花板空間，日後自行購買移動式落地機型。", min: 0, max: 0, checked: false, priority: "optional" }
+                    { title: '不新增除濕設備', desc: "沿用冷氣除濕或既有設備。", min: 0, max: 0, checked: false, priority: "optional" },
+                    { title: 'Panasonic／日立移動式除濕機 2 台', desc: "依空間輪流使用，無須風管與天花板；含 20～30L／日常見級距兩台。", min: 28000, max: 55000, checked: false, priority: "optional" },
+                    { title: '標準吊隱式全戶除濕 <span class="time-tag">⏱️ 約 2～4 天</span>', desc: "含主機、基本風管、風口、排水與控制；25 坪常見完整落地價。", min: 90000, max: 160000, checked: true, priority: "optional" },
+                    { title: '大風量吊隱式／獨立回風系統 <span class="time-tag">⏱️ 約 3～5 天</span>', desc: "適合濕度高、房門常關或風管較長的格局，需做風量與噪音規劃。", min: 140000, max: 230000, checked: false, priority: "optional" },
+                    { title: '全熱＋除濕整合控制升級', desc: "兩套設備做聯動、感測與風管整合的追加費；不含全熱與除濕主機本體。", min: 30000, max: 80000, checked: false, priority: "optional" }
                 ]
             },
             {
-                category: "二之三、 衛浴維護升級單品 (複選)",
+                category: "十七、衛浴設備與機能升級（複選）",
+                type: "checkbox",
+                note: "若衛浴全面重作報價已含馬桶、浴櫃或淋浴門，請取消對應項目。",
+                items: [
+                    { title: 'Panasonic／台灣通路暖風乾燥機 2 台', desc: "含常見級距機種、基本開孔、接線與排風；220V 迴路或長風管另計。", min: 35000, max: 65000, checked: true, priority: "essential" },
+                    { title: '浴室排風逆止閥／防倒灌 2 組', desc: "改善管道間異味與風倒灌，需確認外牆或共用風管施工條件。", min: 5000, max: 12000, checked: true, priority: "essential" },
+                    { title: '電熱毛巾架 2 組', desc: "含台灣可購品牌、基本壁面固定與電源；暗線與補磚另計。", min: 18000, max: 45000, checked: true, priority: "optional" },
+                    { title: '免治馬桶座 2 組', desc: "國際牌、TOTO 等常見中階款；需各有防濺插座與足夠水壓。", min: 30000, max: 80000, checked: false, priority: "optional" },
+                    { title: '一般馬桶更新 2 組', desc: "含國產／日系入門至中階馬桶、拆裝與基本耗材；移位與管線修改另計。", min: 40000, max: 100000, checked: false, priority: "optional" },
+                    { title: '浴櫃、面盆與鏡櫃 2 組', desc: "依尺寸、材質、防潮等級與龍頭品牌估算。", min: 45000, max: 130000, checked: false, priority: "optional" },
+                    { title: '淋浴拉門／無框玻璃 2 組', desc: "一般 8～10 mm 強化玻璃與五金；特殊尺寸與頂噴配置另計。", min: 45000, max: 100000, checked: false, priority: "optional" },
+                    { title: '衛浴防水試水與漏水檢測', desc: "適用局部更新或交屋驗收；全面重作若已含 48 小時試水可取消。", min: 8000, max: 22000, checked: false, priority: "essential" },
+                    { title: '全戶前置過濾／淨水', desc: "含大胖濾殼或同級前置系統、基本旁通與安裝；濾心耗材另計。", min: 25000, max: 70000, checked: false, priority: "optional" },
+                    { title: '全戶軟水系統', desc: "BWT、怡口等台灣通路級距，含基本安裝；需評估空間、排水與補鹽。", min: 60000, max: 140000, checked: true, priority: "optional" }
+                ]
+            },
+            {
+                category: "十八、弱電、網路與影音（複選）",
                 type: "checkbox",
                 items: [
-                    { title: '主客衛浴暖風機 2台 (Panasonic) <span class="time-tag">⏱️ 約半天</span>', desc: "筆記指定重點！天花板開孔與接線定位。", min: 22000, max: 26000, checked: true, priority: "essential" },
-                    { title: '外牆逆止閥風門 (ALASKA 阿拉斯加) <span class="time-tag">⏱️ 約 1~2 小時</span>', desc: "筆記指定重點！阻絕大樓管道間異味倒灌。", min: 3000, max: 6000, checked: true, priority: "essential" },
-                    { title: '電熱毛巾架 2組 (CORREDi 定時款) <span class="time-tag">⏱️ 約 2~3 小時</span>', desc: "鑽孔固定與接線，背膠需靜置24小時。", min: 16000, max: 28000, checked: true, priority: "optional" },
-                    { title: '全戶濾水 + 軟水機 (BWT 德國倍世) <span class="time-tag">⏱️ 約半天</span>', desc: "工作陽台水電配管與主機架設測試。", min: 45000, max: 75000, checked: true, priority: "optional" }
+                    { title: '全屋 Cat6A 有線網路（約 8～12 點）', desc: "含穿管拉線、資訊面板、配線架端接與基本測試；交換器與 Wi-Fi 設備另計。", min: 30000, max: 70000, checked: true, priority: "essential" },
+                    { title: 'Wi-Fi 6／6E Mesh 網路（2～3 節點）', desc: "含台灣通路常見 ASUS、TP-Link、eero 等設備與基本設定。", min: 10000, max: 35000, checked: false, priority: "optional" },
+                    { title: '電視牆影音隱藏管槽', desc: "含 2 吋管、HDMI／網路通道與電源定位；長距離主動式 HDMI 另計。", min: 6000, max: 18000, checked: true, priority: "essential" },
+                    { title: '弱電箱擴充、交換器與小型 UPS', desc: "含機櫃整理、8～16 埠交換器與基礎備援電源；NAS 硬碟另計。", min: 18000, max: 65000, checked: false, priority: "optional" },
+                    { title: '室內／陽台監視器 3～5 支', desc: "含 PoE 或 Wi-Fi 攝影機、儲存與基本施工；公共區域攝影需遵守社區與隱私規範。", min: 20000, max: 80000, checked: false, priority: "optional" },
+                    { title: '對講機／門口機更新', desc: "需確認大樓系統相容性；社區共用系統無法單戶任意更換時不適用。", min: 10000, max: 40000, checked: false, priority: "optional" }
                 ]
             },
             {
-                category: "三、 弱電高速網路與木作系統櫃 (複選)",
+                category: "十九、智慧家庭與門鎖（複選）",
                 type: "checkbox",
                 items: [
-                    { title: '電視牆影音隱藏管槽 <span class="time-tag">⏱️ 約半天</span>', desc: "筆記指定重點！水電打牆階段埋入2吋管，隱藏線路。", min: 6000, max: 15000, checked: true, priority: "essential" },
-                    { title: '弱電升級 + 全屋 Cat6A 高速網路 <span class="time-tag">⏱️ 約 1~2 天</span>', desc: "穿管拉線、壓接資訊插座與全室訊號測試。", min: 25000, max: 45000, checked: true, priority: "essential" },
-                    { title: '原屋系統櫃維修與五金升級 <span class="time-tag">⏱️ 約半天~1天</span>', desc: "全屋舊門片更換 Blum 緩衝鉸鏈。", min: 20000, max: 45000, checked: true, priority: "essential" },
-                    { title: '主臥床頭與化妝台淺櫃 <span class="time-tag">⏱️ 約 1 天</span>', desc: "筆記指定重點：不要深櫃、預留吹風機插座。", min: 20000, max: 40000, checked: true, priority: "essential" },
-                    { title: '全屋智慧開關面板 (Aqara 綠米) <span class="time-tag">⏱️ 約 1 天</span>', desc: "油漆完工後，水電最後退場前進場安裝。", min: 50000, max: 100000, checked: true, priority: "optional" },
-                    { title: '玄關智慧污衣與裝備櫃 <span class="time-tag">⏱️ 約 1~2 天</span>', desc: "系統櫃板材集中進場組裝。", min: 40000, max: 75000, checked: true, priority: "optional" },
-                    { title: '書房訂製滑軌漫畫櫃與工作區 <span class="time-tag">⏱️ 約 2~3 天</span>', desc: "重載滑軌軌道校正與櫃體水平調整。", min: 40000, max: 80000, checked: true, priority: "optional" },
-                    { title: '飛利浦 Alpha 智慧電子鎖 <span class="time-tag">⏱️ 約 2~3 小時</span>', desc: "拆除原大門舊鎖與鎖體校正調試。", min: 17000, max: 19000, checked: true, priority: "optional" },
-                    { title: 'Aqara G4 視訊門鈴 <span class="time-tag">⏱️ 約 1~2 小時</span>', desc: "與電子鎖同期安裝，可與智慧開關聯動。", min: 6000, max: 9000, checked: true, priority: "optional" }
+                    { title: 'Aqara／HomeKit 智慧開關（約 12～20 路）', desc: "含台灣可購面板、零火線條件確認與基本安裝；場景設定與跨品牌整合另計。", min: 40000, max: 95000, checked: true, priority: "optional" },
+                    { title: '智慧中樞、人體／門窗／漏水感測器', desc: "1～2 個中樞搭配約 8～15 個感測器，含基本自動化設定。", min: 12000, max: 40000, checked: false, priority: "optional" },
+                    { title: '智慧窗簾馬達 2～4 組', desc: "含常見軌道與馬達基本安裝；超長軌、雙開、蛇行簾與電源新增另計。", min: 25000, max: 70000, checked: false, priority: "optional" },
+                    { title: 'Philips Alpha 同級智慧電子鎖', desc: "台灣通路含基本安裝約落在此區間；特殊門況、天地鉤與補門另計。", min: 17000, max: 32000, checked: true, priority: "essential" },
+                    { title: 'Aqara G4／同級智慧視訊門鈴', desc: "含機身、基本固定與設定；若要永久供電需另拉線。", min: 4500, max: 10000, checked: true, priority: "optional" }
                 ]
             },
             {
-                category: "四、 新廚房配備：廚下洗碗機 (單選)",
+                category: "二十、系統櫃與木作收納（複選）",
+                type: "checkbox",
+                note: "系統櫃常以尺計價，以下按 25 坪常見配置估總價；板材、五金、門片與燈帶會明顯影響價格。",
+                items: [
+                    { title: '原屋系統櫃維修與五金升級', desc: "門片校正、局部補板與 Blum／同級緩衝鉸鏈更新；大面積換門片另計。", min: 20000, max: 65000, checked: true, priority: "essential" },
+                    { title: '玄關頂天收納＋污衣／掃地機櫃', desc: "約 6～10 尺，含圓角收邊、底部懸空與基本燈帶預留；沿用先前玄關偏好。", min: 50000, max: 120000, checked: true, priority: "essential" },
+                    { title: '主臥床頭淺櫃＋化妝台', desc: "約 6～10 尺，控制櫃深並預留吹風機與充電插座。", min: 40000, max: 100000, checked: true, priority: "essential" },
+                    { title: '三房衣櫃／收納櫃', desc: "約 18～30 尺的中階系統櫃配置；特殊門片、玻璃與高階五金另計。", min: 140000, max: 320000, checked: false, priority: "optional" },
+                    { title: '電視牆與客廳收納櫃', desc: "約 8～14 尺，含影音散熱與基本線路孔；石材、特殊塗料另計。", min: 70000, max: 180000, checked: false, priority: "optional" },
+                    { title: '書房重載滑軌漫畫櫃＋工作區', desc: "重載五金、止擋與櫃體水平精度要求較高，應依藏書重量與軌道規格報價。", min: 90000, max: 200000, checked: true, priority: "optional" },
+                    { title: '陽台家事櫃／清潔用品櫃', desc: "約 4～8 尺，潮濕區需選防潮板材並避開熱水器與曬衣動線。", min: 30000, max: 80000, checked: false, priority: "optional" }
+                ]
+            },
+            {
+                category: "二十一、洗碗機（單選）",
                 type: "radio",
                 name: "dishwasher",
-                note: "新增更多洗碗機品牌供您評估：",
+                note: "價格含台灣通路常見機價與基本安裝概算；全嵌機門板、廚具開孔、220V 或長距離管線可能另計。",
                 items: [
-                    { title: 'Bosch 6系列 60cm 全嵌 (SMS6HAW10X) <span class="time-tag">⏱️ 約半天</span>', desc: "含沸石烘乾技術，與新廚具完美整合設計。", min: 52000, max: 58000, checked: true, priority: "essential" },
-                    { title: 'Miele 德國美諾 G7000系列 60cm 半/全嵌 <span class="time-tag">⏱️ 約半天</span>', desc: "洗碗機界勞斯萊斯，專利 AutoDos 智能洗劑投放，極致護鍋護杯。", min: 70000, max: 95000, checked: false, priority: "essential" },
-                    { title: 'ASKO 瑞典賽寧 86系列 60cm 全嵌 <span class="time-tag">⏱️ 約半天</span>', desc: "超大容量與獨家 Turbo Drying 抽風烘乾系統，適合有大量塑膠兒童餐具的家庭。", min: 65000, max: 75000, checked: false, priority: "essential" },
-                    { title: 'Panasonic 45cm 獨立/半嵌 (NP-45MD9W) <span class="time-tag">⏱️ 約半天</span>', desc: "日系深型規格，省空間首選，完美融入新廚具。", min: 45000, max: 49000, checked: false, priority: "essential" },
-                    { title: '櫻花 SAKURA 60cm 全嵌式 (E7783) <span class="time-tag">⏱️ 約半天</span>', desc: "高CP值國產首選，符合台灣人下廚習慣，維修保固最便利。", min: 28000, max: 35000, checked: false, priority: "essential" }
+                    { title: '不裝洗碗機／沿用舊機', desc: "新廚具仍建議預留 60 cm 或 45 cm 櫃位、給排水與插座。", min: 0, max: 5000, checked: false, priority: "essential" },
+                    { title: '櫻花 SAKURA E7783 60 cm 全嵌式', desc: "14 人份、110V、自動開門；官方機價約 3.15 萬元，門板與特殊櫃體另計。", min: 31500, max: 42000, checked: false, priority: "essential" },
+                    { title: 'Bosch 4 系列 60 cm 半／全嵌式', desc: "台灣官方建議售價約 4.9～5.2 萬元級距，依型號與促銷調整。", min: 47000, max: 58000, checked: false, priority: "essential" },
+                    { title: 'Bosch 6 系列 60 cm 半／全嵌式', desc: "台灣官方建議售價約 5.9～6.2 萬元級距，烘乾方式依型號不同。", min: 56000, max: 70000, checked: true, priority: "essential" },
+                    { title: 'Bosch 8 系列沸石 60 cm 全嵌式', desc: "高階沸石烘乾機種，台灣官方建議售價約 9.9 萬元。", min: 90000, max: 108000, checked: false, priority: "optional" },
+                    { title: 'Panasonic 45 cm 日系深型嵌入式', desc: "適合櫃寬受限；需確認 200V／220V、變壓器、櫃體深度與台灣保固來源。", min: 45000, max: 65000, checked: false, priority: "optional" },
+                    { title: 'Miele G 7000 系列 60 cm', desc: "依半嵌／全嵌、AutoDos 與烘乾規格估算；台灣公司貨與安裝條件需逐案確認。", min: 90000, max: 160000, checked: false, priority: "optional" },
+                    { title: 'ASKO 60 cm 高階嵌入式', desc: "依系列、烘乾與不鏽鋼結構等級估算，選購前確認台灣代理保固。", min: 80000, max: 130000, checked: false, priority: "optional" }
                 ]
             },
             {
-                category: "四之二、 新廚房配備：油煙機、烤箱",
-                type: "checkbox",
+                category: "二十二、排油煙機與爐具組合（單選）",
+                type: "radio",
+                name: "cooktop_hood",
                 items: [
-                    { title: '林內倒T式排油煙機（RH-B100VG） <span class="time-tag">⏱️ 約 1 小時</span>', desc: "台灣下廚習慣油煙量大，建議選排煙效率高的款式。", min: 15000, max: 22000, checked: true, priority: "essential" },
-                    { title: '林內崁入式瓦斯爐（RB-3TG） <span class="time-tag">⏱️ 約半天</span>', desc: "廚具廠商協助安裝崁入。", min: 12000, max: 18000, checked: true, priority: "essential" },
-                    { title: 'Bosch 崁入式蒸烤箱（HRG5140S2） <span class="time-tag">⏱️ 約半天</span>', desc: "水電須提前拉專用迴路（220V/20A）。", min: 35000, max: 55000, checked: false, priority: "optional" }
+                    { title: '沿用原設備／暫不購買', desc: "僅保留安裝位置與管線。", min: 0, max: 5000, checked: false, priority: "essential" },
+                    { title: '國產基本款：櫻花／林內二口爐＋隱藏式煙機', desc: "含台灣通路常見機價與基本安裝，適合一般家庭烹調。", min: 25000, max: 42000, checked: false, priority: "essential" },
+                    { title: '國產中高階：三口爐＋倒 T／近吸式煙機', desc: "林內、櫻花等常見中高階組合；特殊排煙管與修櫃另計。", min: 40000, max: 70000, checked: true, priority: "essential" },
+                    { title: 'Bosch／進口爐具＋排油煙機', desc: "以台灣公司貨中階組合估算；油煙量大的家庭需優先確認外排效率。", min: 55000, max: 100000, checked: false, priority: "optional" },
+                    { title: 'IH 感應爐＋高效排油煙機', desc: "含中階 IH 與煙機；220V 專用迴路、契約容量與鍋具汰換另計。", min: 65000, max: 130000, checked: false, priority: "optional" }
                 ]
             },
             {
-                category: "五、 數位恆溫熱水器 (單選)",
+                category: "二十三、烤箱／蒸烤設備（單選）",
+                type: "radio",
+                name: "oven",
+                items: [
+                    { title: '不購買烤箱／沿用舊機', desc: "仍可視需求預留插座或高櫃散熱空間。", min: 0, max: 0, checked: true, priority: "optional" },
+                    { title: '檯上型蒸烤爐／氣炸烤箱', desc: "約 20～35L 台灣常見家電通路款式，免改櫃體。", min: 6000, max: 18000, checked: false, priority: "optional" },
+                    { title: '45 cm 嵌入式蒸烤爐', desc: "國產／日系／歐系入門至中階款；需預留專用迴路與散熱。", min: 30000, max: 65000, checked: false, priority: "optional" },
+                    { title: 'Bosch 4／6 系列 60 cm 嵌入式烤箱', desc: "依純烤、蒸氣輔助與清潔功能估算，台灣官方通路可購。", min: 45000, max: 90000, checked: false, priority: "optional" },
+                    { title: '高階蒸烤爐／多功能烤箱', desc: "Bosch 8、Miele 等級，價格會因蒸氣、探針與自清功能大幅提高。", min: 100000, max: 180000, checked: false, priority: "optional" }
+                ]
+            },
+            {
+                category: "二十四、熱水器（單選）",
                 type: "radio",
                 name: "water_heater",
+                note: "雙衛浴若會同時用水，應依冬季進水溫、水壓與管線距離評估 16L、20L 或 24L。",
                 items: [
-                    { title: '林內 16L 微電腦強排 (RU-1633WX) <span class="time-tag">⏱️ 約 2~3 小時</span>', desc: "水量伺服器，溫控精準。", min: 16500, max: 18500, checked: true, priority: "essential" },
-                    { title: '櫻花 16L 四季溫強排 (SH-1635) <span class="time-tag">⏱️ 約 2~3 小時</span>', desc: "全自動偵測四季水溫，智能調整火力。", min: 15000, max: 17000, checked: false, priority: "essential" }
+                    { title: '沿用既有熱水器', desc: "建議確認年限、能效、強制排氣與一氧化碳安全。", min: 0, max: 5000, checked: false, priority: "essential" },
+                    { title: '林內／櫻花 16L 數位恆溫強排', desc: "台灣通路常見含基本安裝約 1.8～2.5 萬元；排氣延長與管線修改另計。", min: 18000, max: 26000, checked: true, priority: "essential" },
+                    { title: '林內／櫻花／Noritz 20～24L 恆溫強排', desc: "適合雙衛浴同時使用或較長管線，需確認瓦斯流量與安裝位置。", min: 30000, max: 52000, checked: false, priority: "optional" },
+                    { title: '儲熱式電熱水器', desc: "含一般容量機種與基本安裝；需評估空間、結構承重、220V 與尖峰用電。", min: 28000, max: 60000, checked: false, priority: "optional" },
+                    { title: '熱泵熱水器', desc: "節能但主機與水箱較占空間，集合住宅需確認陽台、排水與噪音條件。", min: 90000, max: 180000, checked: false, priority: "optional" }
                 ]
             },
             {
-                category: "六、 家事自動化與主力家電 (複選)",
+                category: "二十五、廚下飲水與淨水（單選）",
+                type: "radio",
+                name: "drinking_water",
+                items: [
+                    { title: '不裝廚下飲水設備', desc: "僅預留一般冷水與插座。", min: 0, max: 0, checked: false, priority: "optional" },
+                    { title: '廚下多道式淨水器（常溫）', desc: "3M、愛惠浦、BRITA 等台灣常見級距，含基本安裝；濾心耗材另計。", min: 8000, max: 22000, checked: false, priority: "essential" },
+                    { title: '入門廚下瞬熱飲水機', desc: "含常見國產主機、龍頭與基本安裝；濾芯與櫥櫃開孔需確認。", min: 28000, max: 45000, checked: false, priority: "essential" },
+                    { title: 'VOCA TX1／Aquawin／BWT 同級瞬熱系統', desc: "台灣通路完整機組約 3.5～5.5 萬元級距，依濾芯、龍頭與安裝條件浮動。", min: 38000, max: 58000, checked: true, priority: "essential" },
+                    { title: 'RO 逆滲透＋冷熱飲水系統', desc: "含 RO 主機、儲水／瞬熱與基本安裝；需預留排水、電源與耗材空間。", min: 40000, max: 75000, checked: false, priority: "optional" }
+                ]
+            },
+            {
+                category: "二十六、全室窗簾（單選）",
+                type: "radio",
+                name: "curtains",
+                note: "以客餐廳＋3 房約 5～7 樘估算；窗寬、布料倍數、遮光率與軌道會影響總價。",
+                items: [
+                    { title: '沿用既有窗簾／暫不更新', desc: "僅清洗或局部維修另估。", min: 0, max: 10000, checked: false, priority: "essential" },
+                    { title: '全室捲簾／遮光捲簾', desc: "台灣訂製常見價格，以 5～7 樘與一般布料估算。", min: 28000, max: 60000, checked: true, priority: "essential" },
+                    { title: '全室布簾＋紗簾', desc: "含一般國產布、軌道與安裝；進口布、落地大窗與高倍數皺褶另計。", min: 55000, max: 110000, checked: false, priority: "optional" },
+                    { title: '蜂巢簾／風琴簾', desc: "隔熱、整潔，特殊窗型與無拉繩款會提高單價。", min: 70000, max: 170000, checked: false, priority: "optional" },
+                    { title: '重點空間電動窗簾 2～4 組', desc: "客廳與主臥電動、其餘一般窗簾的混合配置；電源新增另計。", min: 50000, max: 120000, checked: false, priority: "optional" }
+                ]
+            },
+            {
+                category: "二十七、洗衣與乾衣主機（單選）",
+                type: "radio",
+                name: "laundry_system",
+                items: [
+                    { title: '沿用既有洗衣／乾衣機', desc: "確認尺寸、排水、插座與櫃體散熱即可。", min: 0, max: 5000, checked: false, priority: "essential" },
+                    { title: '15～18 kg 洗衣機單機', desc: "LG、Panasonic、Hitachi 等台灣通路直立或滾筒中階款，含基本運送安裝。", min: 25000, max: 50000, checked: false, priority: "essential" },
+                    { title: '洗脫烘一體機', desc: "節省空間，但完整烘乾容量通常低於洗衣容量；依品牌與容量估算。", min: 35000, max: 70000, checked: false, priority: "optional" },
+                    { title: '洗衣機＋熱泵乾衣機分離疊放', desc: "約 15～18 kg 洗衣搭配 9～16 kg 乾衣，含原廠疊架與基本安裝。", min: 65000, max: 120000, checked: true, priority: "essential" },
+                    { title: 'LG WashTower／同級洗乾衣塔', desc: "一體化操作與較完整功能，依容量、顏色與促銷檔期浮動。", min: 85000, max: 150000, checked: false, priority: "optional" }
+                ]
+            },
+            {
+                category: "二十八、陽台家事設備（複選）",
                 type: "checkbox",
                 items: [
-                    { title: '全屋捲簾窗簾汰換工程 <span class="time-tag">⏱️ 約半天</span>', desc: "細清完畢後進場掛設。", min: 40000, max: 70000, checked: true, priority: "essential" },
-                    { title: 'VOCA TX1 廚下瞬熱飲水機 <span class="time-tag">⏱️ 約 2 小時</span>', desc: "筆記指定重點！於全新廚房檯面開孔定位，管路隱藏。", min: 36000, max: 40000, checked: true, priority: "essential" },
-                    { title: 'LG 滾筒洗衣機（DD直驅馬達系列）<span class="time-tag">⏱️ 約 1~2 小時</span>', desc: "陽台給排水位置確認、水平校正。(備註：家中若已有洗衣機可取消勾選)", min: 28000, max: 42000, checked: true, priority: "optional" },
-                    { title: 'LG 免曬衣 16kg 乾衣機 <span class="time-tag">⏱️ 約 1~2 小時</span>', desc: "可與洗衣機疊放更省空間。", min: 38000, max: 42000, checked: true, priority: "optional" },
-                    { title: '櫻花 SAKURA 電動升降曬衣架 <span class="time-tag">⏱️ 約 2~3 小時</span>', desc: "陽台天花板鑽孔打膨脹螺絲與接線。", min: 12000, max: 18000, checked: true, priority: "optional" }
+                    { title: '電動升降曬衣架', desc: "櫻花、特力屋通路同級機種含基本安裝；陽台天花補強與新增電源另計。", min: 12000, max: 28000, checked: true, priority: "optional" },
+                    { title: '家事水槽、龍頭與陽台櫃', desc: "含一般不鏽鋼／人造石水槽與防潮收納櫃，尺寸與管線調整另計。", min: 35000, max: 90000, checked: false, priority: "optional" },
+                    { title: '瓦斯乾衣機排氣與瓦斯管預留', desc: "僅為施工預留費，不含乾衣機；需由合格技師並依大樓規範施作。", min: 12000, max: 30000, checked: false, priority: "optional" }
                 ]
             },
             {
-                category: "七、 品牌家具：客廳沙發 (單選)",
+                category: "二十九、客廳沙發（單選）",
                 type: "radio",
                 name: "sofa",
-                note: "新增更多台灣熱門品牌沙發供您挑選：",
                 items: [
-                    { title: '沙發先生：龐德系列 (貓抓布) <span class="time-tag">⏱️ 約 1 小時</span>', desc: "椅背可向後滑推延伸坐深，超級適合盤腿打遊戲。", min: 45000, max: 48000, checked: true, priority: "essential" },
-                    { title: 'MR. LIVING 居家先生：布萊恩/威廉系列 <span class="time-tag">⏱️ 約 1 小時</span>', desc: "北歐高質感設計，防潑水布料適合有小孩的家庭。", min: 30000, max: 45000, checked: false, priority: "essential" },
-                    { title: '坐又銘沙發：桑尼/丹尼爾系列 <span class="time-tag">⏱️ 約 1 小時</span>', desc: "台灣手工沙發，主打超級滑軌與健康無毒材質，長效保固。", min: 45000, max: 65000, checked: false, priority: "essential" },
-                    { title: 'AJ2 愛家概念：馬爾默系列 <span class="time-tag">⏱️ 約 1 小時</span>', desc: "高階抗污面料，坐感扎實不塌陷。", min: 54000, max: 59000, checked: false, priority: "essential" },
-                    { title: 'IKEA：KIVIK 三人座沙發 <span class="time-tag">⏱️ 約 1~2 小時</span>', desc: "高性價比，布套可全拆洗。", min: 18000, max: 22000, checked: false, priority: "essential" }
+                    { title: '沿用既有沙發／暫不購買', desc: "搬運、清潔或換布費另計。", min: 0, max: 5000, checked: false, priority: "essential" },
+                    { title: 'IKEA KIVIK／同級三人座', desc: "依布套、腳凳與配送組裝調整。", min: 18000, max: 32000, checked: false, priority: "essential" },
+                    { title: 'MR. LIVING 居家先生中型沙發', desc: "台灣可試坐的北歐風格級距，依座數與布料浮動。", min: 30000, max: 60000, checked: false, priority: "essential" },
+                    { title: '沙發先生貓抓布／滑軌系列', desc: "依 3～4 人座、布料與電動／滑軌功能估算。", min: 42000, max: 75000, checked: true, priority: "essential" },
+                    { title: '坐又銘台灣製訂製沙發', desc: "依尺寸、坐感、布料與功能五金估算。", min: 45000, max: 85000, checked: false, priority: "optional" },
+                    { title: 'AJ2 愛家概念沙發', desc: "官方常見 3～4 人座與 L 型產品約 3.5～6.5 萬元級距，依面料與活動浮動。", min: 35000, max: 70000, checked: false, priority: "optional" }
                 ]
             },
             {
-                category: "八、 品牌家具：主臥床架 (單選)",
+                category: "三十、主臥床架（單選）",
                 type: "radio",
                 name: "bed_master",
-                note: "新增實木與模組化床架選項：",
                 items: [
-                    { title: '有情門：喆林床架 <span class="time-tag">⏱️ 約 1 小時</span>', desc: "台灣製實木，床頭板人體工學設計。", min: 28000, max: 33000, checked: true, priority: "essential" },
-                    { title: '走走家具：模組化雙人床架 <span class="time-tag">⏱️ 約 1 小時</span>', desc: "台灣設計製造，極簡金屬與木材質結合，高腳設計完美配合掃地機。", min: 18000, max: 25000, checked: false, priority: "essential" },
-                    { title: '詩肯柚木 SCANTEAK：標準雙人實木床架 <span class="time-tag">⏱️ 約 1 小時</span>', desc: "天然柚木溫潤質感，堅固耐用不搖晃，經典保值。", min: 25000, max: 40000, checked: false, priority: "essential" },
-                    { title: '眠豆腐：懸空實木裸床架 <span class="time-tag">⏱️ 約 1 小時</span>', desc: "網紅極簡款，結構穩固無異音。", min: 15000, max: 18000, checked: false, priority: "essential" }
+                    { title: '沿用既有床架／暫不購買', desc: "搬運與拆裝費另計。", min: 0, max: 5000, checked: false, priority: "essential" },
+                    { title: 'IKEA／NITORI 收納床架', desc: "雙人床架含基本配送組裝，依抽屜與床頭配置浮動。", min: 10000, max: 25000, checked: false, priority: "essential" },
+                    { title: '走走家具模組化床架', desc: "台灣設計、簡約高腳或模組配置，依尺寸與配件估算。", min: 18000, max: 32000, checked: false, priority: "essential" },
+                    { title: '眠豆腐實木／懸浮床架', desc: "依標準雙人、加大與床頭板配置調整。", min: 20000, max: 35000, checked: false, priority: "optional" },
+                    { title: '有情門台灣實木床架', desc: "依木種、尺寸、床頭與抽屜配置估算。", min: 32000, max: 65000, checked: true, priority: "essential" },
+                    { title: '詩肯柚木／高階實木床架', desc: "天然實木與品牌家具級距，促銷與系列差異較大。", min: 38000, max: 80000, checked: false, priority: "optional" }
                 ]
             },
             {
-                category: "九、 品牌家具：專屬兒童房 (複選)",
-                type: "checkbox",
-                note: "新增多種兒童專門傢俱與護脊品牌：",
+                category: "三十一、主臥床墊（單選）",
+                type: "radio",
+                name: "mattress_master",
                 items: [
-                    { title: '單人床架：iloom 怡倫 (TINKLE-POP) <span class="time-tag">⏱️ 約 1.5 小時</span>', desc: "韓國原裝組件，無毒防撞膠條與粉嫩配色。", min: 24000, max: 28000, checked: true, priority: "essential" },
-                    { title: '成長書桌：大將作 (氣壓升降桌+椅) <span class="time-tag">⏱️ 約 1 小時</span>', desc: "防眩光無毒板材，人體工學護脊。", min: 32000, max: 38000, checked: true, priority: "essential" },
-                    { title: '單人床架：FLEXA 丹麥兒童單人床架 <span class="time-tag">⏱️ 約 2 小時</span>', desc: "北歐頂級兒童家具，可隨成長調整為高架床，全實木無毒環保漆。", min: 35000, max: 55000, checked: false, priority: "optional" },
-                    { title: '單人床架：宜得利 NITORI 附抽屜收納床架 <span class="time-tag">⏱️ 約 1.5 小時</span>', desc: "日系實用高CP值，床底自帶大容量抽屜，方便收納玩具與衣物。", min: 6000, max: 12000, checked: false, priority: "optional" },
-                    { title: '成長書桌：亞梭傢俬 Artso 兒童護脊桌椅組 <span class="time-tag">⏱️ 約 1 小時</span>', desc: "台灣護脊桌椅領導品牌，專利微傾斜桌面與安全防夾設計。", min: 28000, max: 42000, checked: false, priority: "optional" },
-                    { title: '護眼檯燈：BenQ MindDuo <span class="time-tag">⏱️ 約 15 分鐘</span>', desc: "自動入座開燈，廣角無頻閃。", min: 5900, max: 6500, checked: true, priority: "optional" }
+                    { title: '沿用既有床墊／暫不購買', desc: "搬運與清潔另計。", min: 0, max: 3000, checked: true, priority: "essential" },
+                    { title: '台灣品牌泡棉／獨立筒床墊', desc: "標準雙人至加大常見通路級距，應以實躺與保固為主。", min: 15000, max: 35000, checked: false, priority: "essential" },
+                    { title: '眠豆腐／同級網路品牌床墊', desc: "依尺寸、厚度與系列估算。", min: 20000, max: 40000, checked: false, priority: "optional" },
+                    { title: '席夢思／Sealy 中階床墊', desc: "百貨與專櫃價格受系列、尺寸與檔期影響明顯。", min: 50000, max: 110000, checked: false, priority: "optional" },
+                    { title: 'TEMPUR／高階進口床墊', desc: "依材質、厚度與尺寸估算，電動床底另計。", min: 80000, max: 180000, checked: false, priority: "optional" }
+                ]
+            },
+            {
+                category: "三十二、餐桌與餐椅（單選）",
+                type: "radio",
+                name: "dining_set",
+                items: [
+                    { title: '沿用既有餐桌椅／暫不購買', desc: "搬運與修繕另計。", min: 0, max: 3000, checked: true, priority: "essential" },
+                    { title: 'IKEA／NITORI 4～6 人餐桌椅組', desc: "量販家具級距，依材質、座數與配送組裝調整。", min: 15000, max: 40000, checked: false, priority: "essential" },
+                    { title: '台灣品牌實木餐桌椅組', desc: "4～6 人座，依木種、桌面尺寸與椅款估算。", min: 40000, max: 90000, checked: false, priority: "optional" },
+                    { title: '設計品牌／岩板餐桌椅組', desc: "依進口品牌、岩板厚度與椅子數量估算。", min: 80000, max: 180000, checked: false, priority: "optional" }
+                ]
+            },
+            {
+                category: "三十三、兒童房床架（單選）",
+                type: "radio",
+                name: "child_bed",
+                items: [
+                    { title: '沿用既有床架／暫不購買', desc: "先保留成長彈性與活動空間。", min: 0, max: 3000, checked: false, priority: "essential" },
+                    { title: 'NITORI／IKEA 單人收納床架', desc: "含基本配送組裝，依抽屜、床頭與護欄調整。", min: 8000, max: 20000, checked: false, priority: "essential" },
+                    { title: 'iloom 兒童單人床／收納床', desc: "台灣通路可購，依系列、護欄與收納配置估算。", min: 22000, max: 40000, checked: true, priority: "essential" },
+                    { title: 'FLEXA 北歐實木兒童床', desc: "可依成長變換高架／上下舖，配件與床墊另計。", min: 38000, max: 75000, checked: false, priority: "optional" },
+                    { title: '系統訂製收納床／架高床', desc: "依櫃體、階梯、護欄與結構設計估算；需特別注意耐重與防墜。", min: 45000, max: 120000, checked: false, priority: "optional" }
+                ]
+            },
+            {
+                category: "三十四、兒童成長書桌椅（單選）",
+                type: "radio",
+                name: "child_desk",
+                items: [
+                    { title: '沿用既有書桌椅／暫不購買', desc: "可先依孩子身高調整椅墊與腳踏。", min: 0, max: 3000, checked: false, priority: "essential" },
+                    { title: 'IKEA／NITORI 基本書桌椅', desc: "含桌、椅與基本配送組裝，適合先控制預算。", min: 6000, max: 18000, checked: false, priority: "essential" },
+                    { title: 'iloom 兒童書桌椅組', desc: "依桌寬、書架、升降與椅款估算。", min: 22000, max: 45000, checked: false, priority: "optional" },
+                    { title: '亞梭 Artso 成長桌椅組', desc: "台灣護脊家具通路級距，依桌板尺寸與椅款調整。", min: 28000, max: 50000, checked: false, priority: "essential" },
+                    { title: '大將作成長桌＋人體工學椅', desc: "依氣壓／手搖升降、桌寬、書架與椅款估算。", min: 32000, max: 60000, checked: true, priority: "essential" }
+                ]
+            },
+            {
+                category: "三十五、兒童房配件與收納（複選）",
+                type: "checkbox",
+                items: [
+                    { title: 'BenQ MindDuo 2／2 Plus 護眼檯燈', desc: "台灣公司貨，依標準版、坐姿偵測版與活動檔期估算。", min: 6000, max: 9500, checked: true, priority: "optional" },
+                    { title: '兒童單人床墊', desc: "台灣品牌泡棉／獨立筒常見級距，優先確認支撐、透氣與可清潔性。", min: 8000, max: 22000, checked: true, priority: "essential" },
+                    { title: '兒童衣櫃與玩具收納', desc: "成品家具或約 4～8 尺系統櫃，依防傾倒、圓角與板材等級估算。", min: 30000, max: 90000, checked: false, priority: "optional" },
+                    { title: '矮書櫃／展示書架', desc: "成品或簡易訂製，需固定牆面避免傾倒。", min: 10000, max: 35000, checked: false, priority: "optional" },
+                    { title: '兒童房遮光簾／安全窗簾', desc: "單房估算，建議無拉繩或安全拉繩固定設計。", min: 6000, max: 18000, checked: false, priority: "optional" }
                 ]
             }
         ];
@@ -628,12 +888,21 @@
         function calculateTotal() {
             let minTotal = 0;
             let maxTotal = 0;
+            let refundableMin = 0;
+            let refundableMax = 0;
             const inputs = document.querySelectorAll('.item-input');
             
             inputs.forEach((input) => {
                 if (input.checked) {
-                    minTotal += parseInt(input.dataset.min);
-                    maxTotal += parseInt(input.dataset.max);
+                    const itemMin = parseInt(input.dataset.min);
+                    const itemMax = parseInt(input.dataset.max);
+                    if (input.dataset.refundable === 'true') {
+                        refundableMin += itemMin;
+                        refundableMax += itemMax;
+                    } else {
+                        minTotal += itemMin;
+                        maxTotal += itemMax;
+                    }
                 }
             });
 
@@ -643,6 +912,7 @@
             document.getElementById('range-summary').innerText = `NT$ ${formatPrice(minTotal)} ～ ${formatPrice(maxTotal)}`;
             document.getElementById('selected-summary').innerText = `${selectedCount} 項`;
             document.getElementById('all-summary').innerText = `${inputs.length} 項`;
+            document.getElementById('refundable-summary').innerText = `NT$ ${formatPrice(refundableMin)} ～ ${formatPrice(refundableMax)}`;
             document.getElementById('footer-count').innerText = `已選 ${selectedCount} 項`;
             document.querySelectorAll('.item').forEach(item => item.classList.toggle('selected', item.querySelector('.item-input')?.checked));
         }
@@ -693,22 +963,22 @@
                         
                         itemDiv.innerHTML = `
                             <div class="input-wrapper">
-                                <input type="${inputType}" id="${id}" ${inputName} class="item-input" data-min="${item.min}" data-max="${item.max}" ${isChecked}>
+                                <input type="${inputType}" id="${id}" ${inputName} class="item-input" data-min="${item.min}" data-max="${item.max}" data-refundable="${item.refundable === true}" ${isChecked}>
                             </div>
                             <div class="item-content">
                                 <label for="${id}" class="item-title">${item.title}</label>
                                 <div class="item-desc">${item.desc}</div>
                             </div>
                             <div class="item-price">
-                                $${formatPrice(item.min)} - $${formatPrice(item.max)}
+                                NT$ ${formatPrice(item.min)} ～ ${formatPrice(item.max)}${item.refundable ? '<span class="price-flag">可退還</span>' : ''}
                             </div>
                         `;
                         sectionDiv.appendChild(itemDiv);
                     });
                 };
 
-                renderGroup(essentialItems, "絕對必要裝修項目 (基礎安全、必備機能與手寫筆記核心)", "essential-badge", "必備");
-                renderGroup(optionalItems, "其他選配項目 (舒適升級、健康環境與彈性擴充)", "optional-badge", "選配");
+                renderGroup(essentialItems, "基本、安全與主要機能", "essential-badge", "必備");
+                renderGroup(optionalItems, "舒適、品牌與彈性升級", "optional-badge", "選配");
 
                 checklistContainer.appendChild(sectionDiv);
             });
